@@ -14,7 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, HighRated.OnFragmentInteractionListener, Home.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        HighRated.OnFragmentInteractionListener, Home.OnFragmentInteractionListener, About.OnFragmentInteractionListener {
     FragmentManager fragmentManager;
     Fragment fragment;
 
@@ -84,10 +85,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_rating) {
             fragment = new HighRated();
             fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_about) {
+            fragment = new About();
+            fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
