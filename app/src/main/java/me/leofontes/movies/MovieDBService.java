@@ -13,4 +13,7 @@ public interface MovieDBService {
 
     @GET("movie?api_key=ac6ebfcd9300aeee710aef10fe23e547&sort_by=popularity.desc")
     Call<MoviesCatalog> listCatalogPopular();
+
+    @GET("movie?api_key=ac6ebfcd9300aeee710aef10fe23e547&sort_by=vote_average.desc")
+    Call<MoviesCatalog> listCatalogHighRated();
 }

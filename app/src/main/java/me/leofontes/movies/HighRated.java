@@ -4,9 +4,18 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import me.leofontes.movies.Models.Movie;
+import me.leofontes.movies.Models.MoviesCatalog;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
@@ -22,6 +31,7 @@ public class HighRated extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "HOME_TAG";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -64,7 +74,43 @@ public class HighRated extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_high_rated, container, false);
+        View rootview = inflater.inflate(R.layout.fragment_high_rated, container, false);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(MovieDBService.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        MovieDBService service = retrofit.create(MovieDBService.class);
+        Call<MoviesCatalog> requestCatalogHighRated = service.listCatalogHighRated();
+
+        requestCatalogHighRated.enqueue(new Callback<MoviesCatalog>() {
+            @Override
+            public void onResponse(Call<MoviesCatalog> call, Response<MoviesCatalog> response) {
+                if(!response.isSuccessful()) {
+                    Log.i(TAG, "Erro: " + response.code());
+                } else {
+                    MoviesCatalog catalog = response.body();
+
+                    for(Movie m : catalog.results) {
+                        Log.i(TAG, "Original Title: " + m.original_title);
+                        Log.i(TAG, "Overview: " + m.overview);
+                        Log.i(TAG, "Backdrop: " + m.backdrop_path);
+                        Log.i(TAG, "Vote Average: " + m.vote_average);
+                        Log.i(TAG, "Release date: " + m.release_date);
+
+                        Log.i(TAG, "-----------------------------------------");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MoviesCatalog> call, Throwable t) {
+                Log.e(TAG, "Erro: " + t.getMessage());
+            }
+        });
+
+        return rootview;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
