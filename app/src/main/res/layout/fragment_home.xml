@@ -5,4 +5,9 @@
     tools:context="me.leofontes.movies.Home">
 
 
+    <TextView
+        android:text="Home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView" />
 </FrameLayout>

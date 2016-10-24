@@ -1,7 +1,10 @@
 package me.leofontes.movies;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -11,7 +14,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, HighRated.OnFragmentInteractionListener, Home.OnFragmentInteractionListener {
+    FragmentManager fragmentManager;
+    Fragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +33,10 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        fragment = new Home();
+        fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
     }
 
     @Override
@@ -67,11 +76,14 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        fragmentManager = getSupportFragmentManager();
 
         if (id == R.id.nav_popular) {
-            // Handle the camera action
+            fragment = new Home();
+            fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
         } else if (id == R.id.nav_rating) {
-
+            fragment = new HighRated();
+            fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
@@ -81,5 +93,10 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
