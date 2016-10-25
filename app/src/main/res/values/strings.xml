@@ -17,4 +17,8 @@
     <!-- ABOUT -->
     <string name="about_developer">Developed by:</string>
     <string name="about_name_developer">Laboratório Bridge</string>
+    <string name="title_activity_movie_detail">MovieDetailActivity</string>
+
+    <!-- DETAIL ACTIVITY -->
+    <string name="detail_label_synopsis">Synopsis</string>
 </resources>
