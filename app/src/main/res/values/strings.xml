@@ -21,4 +21,6 @@
 
     <!-- DETAIL ACTIVITY -->
     <string name="detail_label_synopsis">Synopsis</string>
+    <string name="detail_label_user_rating">User Rating</string>
+    <string name="detail_label_release_date">Release Date</string>
 </resources>

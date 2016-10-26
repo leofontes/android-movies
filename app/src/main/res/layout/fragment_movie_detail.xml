@@ -69,24 +69,55 @@
         android:paddingTop="5sp">
 
         <TextView
-            android:text="TextView"
+            android:text="@string/detail_label_user_rating"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/textView5"
+            android:id="@+id/textview_label_user_rating"
             android:layout_weight="1"
             android:textAlignment="center"
             android:layout_gravity="center_vertical"
             android:textColor="@color/white" />
 
         <TextView
-            android:text="TextView"
+            android:text="4/5"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/textView4"
+            android:id="@+id/textview_detail_user_rating"
             android:layout_weight="2"
             android:textAlignment="center"
             android:layout_gravity="center_vertical"
             android:textColor="@color/white" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/defaultLightGray"
+        android:paddingTop="5sp"
+        android:paddingBottom="5sp">
+
+        <TextView
+            android:text="@string/detail_label_release_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/textview_label_release_date"
+            android:layout_weight="1"
+            android:textColor="@color/black"
+            android:layout_gravity="center_vertical"
+            android:textAlignment="center"
+            android:textStyle="bold" />
+
+        <TextView
+            android:text="20/02/1998"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/textview_detail_release_date"
+            android:layout_weight="2"
+            android:textColor="@color/black"
+            android:layout_gravity="center_vertical"
+            android:textAlignment="center" />
     </LinearLayout>
 
 </LinearLayout>
