@@ -23,21 +23,17 @@ import me.leofontes.movies.R;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder> {
     private List<Movie> mList;
-    private LayoutInflater mLayoutInflater;
-    private Context mContext;
     private String baseImage = "http://image.tmdb.org/t/p/w185/";
     private RecyclerViewOnClickListenerHack mRecyclerViewOnClickListenerHack;
 
     public MovieAdapter(Context c, List<Movie> l) {
         mList = l;
-        mContext = c;
-        mLayoutInflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.i("LOG", "onCreateViewHolder");
-        View v = mLayoutInflater.inflate(R.layout.item_movie, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_movie, parent, false);
         MyViewHolder mvh = new MyViewHolder(v);
 
         return mvh;
@@ -46,7 +42,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Log.i("LOG", "onBindViewHolder");
-        Picasso.with(mContext).load(baseImage + mList.get(position).backdrop_path).into(holder.ivPoster);
+        Picasso.with(holder.itemView.getContext()).load(baseImage + mList.get(position).backdrop_path).into(holder.ivPoster);
         holder.ivTitle.setText(mList.get(position).original_title);
     }
 
@@ -75,7 +71,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
         @Override
         public void onClick(View v) {
             if(mRecyclerViewOnClickListenerHack != null) {
-                mRecyclerViewOnClickListenerHack.OnClickListener(v, getPosition());
+                mRecyclerViewOnClickListenerHack.OnClickListener(v, getAdapterPosition());
             }
         }
     }

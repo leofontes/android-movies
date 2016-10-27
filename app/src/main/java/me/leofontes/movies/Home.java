@@ -128,10 +128,6 @@ public class Home extends Fragment implements RecyclerViewOnClickListenerHack {
                             }
                         });
 
-                        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-                        llm.setOrientation(LinearLayoutManager.VERTICAL);
-                        mRecyclerView.setLayoutManager(llm);
-
                         MovieAdapter adapter = new MovieAdapter(getActivity(), catalog.results);
                         adapter.setmRecyclerViewOnClickListenerHack(Home.this);
                         mRecyclerView.setAdapter(adapter);
