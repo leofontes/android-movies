@@ -5,7 +5,8 @@
 
 <h3>Features</h3>
 <ul>
-  <li></li>
+  <li>Most popular movies</li>
+  <li>Highest rated movies</li>
 </ul>
 
 <h3>API Key</h3>
