@@ -2,6 +2,8 @@ package me.leofontes.movies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -87,69 +89,71 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
         // Inflate the layout for this fragment
         rootview = inflater.inflate(R.layout.fragment_high_rated, container, false);
 
-        // Retrofit stuff
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(MovieDBService.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        if(isOnline()) {
+            // Retrofit stuff
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(MovieDBService.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
 
-        MovieDBService service = retrofit.create(MovieDBService.class);
-        Call<MoviesCatalog> requestCatalogHighRated = service.listCatalogHighRated();
+            MovieDBService service = retrofit.create(MovieDBService.class);
+            Call<MoviesCatalog> requestCatalogHighRated = service.listCatalogHighRated();
 
-        requestCatalogHighRated.enqueue(new Callback<MoviesCatalog>() {
-            @Override
-            public void onResponse(Call<MoviesCatalog> call, Response<MoviesCatalog> response) {
-                if(!response.isSuccessful()) {
-                    Log.i(TAG, "Erro: " + response.code());
-                } else {
-                    catalog = response.body();
+            requestCatalogHighRated.enqueue(new Callback<MoviesCatalog>() {
+                @Override
+                public void onResponse(Call<MoviesCatalog> call, Response<MoviesCatalog> response) {
+                    if(!response.isSuccessful()) {
+                        Log.i(TAG, "Erro: " + response.code());
+                    } else {
+                        catalog = response.body();
 
-                    for(Movie m : catalog.results) {
-                        Log.i(TAG, "Original Title: " + m.original_title);
-                        Log.i(TAG, "Overview: " + m.overview);
-                        Log.i(TAG, "Backdrop: " + m.backdrop_path);
-                        Log.i(TAG, "Vote Average: " + m.vote_average);
-                        Log.i(TAG, "Release date: " + m.release_date);
+                        for(Movie m : catalog.results) {
+                            Log.i(TAG, "Original Title: " + m.original_title);
+                            Log.i(TAG, "Overview: " + m.overview);
+                            Log.i(TAG, "Backdrop: " + m.backdrop_path);
+                            Log.i(TAG, "Vote Average: " + m.vote_average);
+                            Log.i(TAG, "Release date: " + m.release_date);
 
-                        Log.i(TAG, "-----------------------------------------");
-                    }
-
-                    // Manage the RecyclerView
-                    mRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_high_rated);
-                    mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-                        @Override
-                        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                            super.onScrollStateChanged(recyclerView, newState);
+                            Log.i(TAG, "-----------------------------------------");
                         }
 
-                        @Override
-                        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                            super.onScrolled(recyclerView, dx, dy);
-
-                            LinearLayoutManager llm = (LinearLayoutManager) mRecyclerView.getLayoutManager();
-                            MovieAdapter adapter = (MovieAdapter) mRecyclerView.getAdapter();
-
-                            if(catalog.results.size() == llm.findLastCompletelyVisibleItemPosition() + 1) {
-
+                        // Manage the RecyclerView
+                        mRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_high_rated);
+                        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+                            @Override
+                            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                                super.onScrollStateChanged(recyclerView, newState);
                             }
-                        }
-                    });
 
-                    LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-                    llm.setOrientation(LinearLayoutManager.VERTICAL);
-                    mRecyclerView.setLayoutManager(llm);
+                            @Override
+                            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                                super.onScrolled(recyclerView, dx, dy);
 
-                    MovieAdapter adapter = new MovieAdapter(getActivity(), catalog.results);
-                    adapter.setmRecyclerViewOnClickListenerHack(HighRated.this);
-                    mRecyclerView.setAdapter(adapter);
+                                LinearLayoutManager llm = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+                                MovieAdapter adapter = (MovieAdapter) mRecyclerView.getAdapter();
+
+                                if(catalog.results.size() == llm.findLastCompletelyVisibleItemPosition() + 1) {
+
+                                }
+                            }
+                        });
+
+                        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+                        llm.setOrientation(LinearLayoutManager.VERTICAL);
+                        mRecyclerView.setLayoutManager(llm);
+
+                        MovieAdapter adapter = new MovieAdapter(getActivity(), catalog.results);
+                        adapter.setmRecyclerViewOnClickListenerHack(HighRated.this);
+                        mRecyclerView.setAdapter(adapter);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<MoviesCatalog> call, Throwable t) {
-                Log.e(TAG, "Erro: " + t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(Call<MoviesCatalog> call, Throwable t) {
+                    Log.e(TAG, "Erro: " + t.getMessage());
+                }
+            });
+        }
 
 
 
@@ -204,5 +208,11 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }

@@ -2,6 +2,8 @@ package me.leofontes.movies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -86,60 +88,62 @@ public class Home extends Fragment implements RecyclerViewOnClickListenerHack {
         // Inflate the layout for this fragment
         rootview = inflater.inflate(R.layout.fragment_home, container, false);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(MovieDBService.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        if(isOnline()) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(MovieDBService.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
 
-        MovieDBService service = retrofit.create(MovieDBService.class);
-        Call<MoviesCatalog> requestCatalogPopular = service.listCatalogPopular();
+            MovieDBService service = retrofit.create(MovieDBService.class);
+            Call<MoviesCatalog> requestCatalogPopular = service.listCatalogPopular();
 
-        requestCatalogPopular.enqueue(new Callback<MoviesCatalog>() {
-            @Override
-            public void onResponse(Call<MoviesCatalog> call, Response<MoviesCatalog> response) {
-                if(!response.isSuccessful()) {
-                    Log.i(TAG, "Erro: " + response.code());
-                } else {
-                    catalog = response.body();
+            requestCatalogPopular.enqueue(new Callback<MoviesCatalog>() {
+                @Override
+                public void onResponse(Call<MoviesCatalog> call, Response<MoviesCatalog> response) {
+                    if(!response.isSuccessful()) {
+                        Log.i(TAG, "Erro: " + response.code());
+                    } else {
+                        catalog = response.body();
 
-                    for(Movie m : catalog.results) {
-                        Log.i(TAG, "Original Title: " + m.original_title);
-                        Log.i(TAG, "Overview: " + m.overview);
-                        Log.i(TAG, "Backdrop: " + m.backdrop_path);
-                        Log.i(TAG, "Vote Average: " + m.vote_average);
-                        Log.i(TAG, "Release date: " + m.release_date);
+                        for(Movie m : catalog.results) {
+                            Log.i(TAG, "Original Title: " + m.original_title);
+                            Log.i(TAG, "Overview: " + m.overview);
+                            Log.i(TAG, "Backdrop: " + m.backdrop_path);
+                            Log.i(TAG, "Vote Average: " + m.vote_average);
+                            Log.i(TAG, "Release date: " + m.release_date);
 
-                        Log.i(TAG, "-----------------------------------------");
+                            Log.i(TAG, "-----------------------------------------");
+                        }
+
+                        mRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_home);
+                        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+                            @Override
+                            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                                super.onScrollStateChanged(recyclerView, newState);
+                            }
+
+                            @Override
+                            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                                super.onScrolled(recyclerView, dx, dy);
+                            }
+                        });
+
+                        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+                        llm.setOrientation(LinearLayoutManager.VERTICAL);
+                        mRecyclerView.setLayoutManager(llm);
+
+                        MovieAdapter adapter = new MovieAdapter(getActivity(), catalog.results);
+                        adapter.setmRecyclerViewOnClickListenerHack(Home.this);
+                        mRecyclerView.setAdapter(adapter);
                     }
-
-                    mRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_home);
-                    mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-                        @Override
-                        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                            super.onScrollStateChanged(recyclerView, newState);
-                        }
-
-                        @Override
-                        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                            super.onScrolled(recyclerView, dx, dy);
-                        }
-                    });
-
-                    LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-                    llm.setOrientation(LinearLayoutManager.VERTICAL);
-                    mRecyclerView.setLayoutManager(llm);
-
-                    MovieAdapter adapter = new MovieAdapter(getActivity(), catalog.results);
-                    adapter.setmRecyclerViewOnClickListenerHack(Home.this);
-                    mRecyclerView.setAdapter(adapter);
                 }
-            }
 
-            @Override
-            public void onFailure(Call<MoviesCatalog> call, Throwable t) {
-                Log.e(TAG, "Erro: " + t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(Call<MoviesCatalog> call, Throwable t) {
+                    Log.e(TAG, "Erro: " + t.getMessage());
+                }
+            });
+        }
 
         return rootview;
     }
@@ -192,5 +196,11 @@ public class Home extends Fragment implements RecyclerViewOnClickListenerHack {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }
