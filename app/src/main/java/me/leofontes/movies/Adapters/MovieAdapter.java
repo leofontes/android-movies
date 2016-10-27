@@ -1,0 +1,67 @@
+package me.leofontes.movies.Adapters;
+
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+
+import java.util.List;
+
+import me.leofontes.movies.Models.Movie;
+import me.leofontes.movies.R;
+
+/**
+ * Created by leo on 26/10/16.
+ */
+
+public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder> {
+    private List<Movie> mList;
+    private LayoutInflater mLayoutInflater;
+    private Context mContext;
+    private String baseImage = "http://image.tmdb.org/t/p/w185/";
+
+    public MovieAdapter(Context c, List<Movie> l) {
+        mList = l;
+        mContext = c;
+        mLayoutInflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    @Override
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.i("LOG", "onCreateViewHolder");
+        View v = mLayoutInflater.inflate(R.layout.item_movie, parent, false);
+        MyViewHolder mvh = new MyViewHolder(v);
+
+        return mvh;
+    }
+
+    @Override
+    public void onBindViewHolder(MyViewHolder holder, int position) {
+        Log.i("LOG", "onBindViewHolder");
+        Picasso.with(mContext).load(baseImage + mList.get(position).backdrop_path).into(holder.ivPoster);
+        holder.ivTitle.setText(mList.get(position).original_title);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mList.size();
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        public ImageView ivPoster;
+        public TextView ivTitle;
+
+        public MyViewHolder(View itemView) {
+            super(itemView);
+
+            ivPoster = (ImageView) itemView.findViewById(R.id.imageview_item_poster);
+            ivTitle = (TextView) itemView.findViewById(R.id.textview_item_title);
+        }
+    }
+}

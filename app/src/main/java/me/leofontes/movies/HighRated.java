@@ -4,11 +4,15 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import me.leofontes.movies.Adapters.MovieAdapter;
 import me.leofontes.movies.Models.Movie;
 import me.leofontes.movies.Models.MoviesCatalog;
 import retrofit2.Call;
@@ -38,6 +42,10 @@ public class HighRated extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private RecyclerView mRecyclerView;
+    private MoviesCatalog catalog;
+    private View rootview;
 
     public HighRated() {
         // Required empty public constructor
@@ -74,8 +82,9 @@ public class HighRated extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootview = inflater.inflate(R.layout.fragment_high_rated, container, false);
+        rootview = inflater.inflate(R.layout.fragment_high_rated, container, false);
 
+        // Retrofit stuff
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(MovieDBService.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -90,7 +99,7 @@ public class HighRated extends Fragment {
                 if(!response.isSuccessful()) {
                     Log.i(TAG, "Erro: " + response.code());
                 } else {
-                    MoviesCatalog catalog = response.body();
+                    catalog = response.body();
 
                     for(Movie m : catalog.results) {
                         Log.i(TAG, "Original Title: " + m.original_title);
@@ -101,6 +110,34 @@ public class HighRated extends Fragment {
 
                         Log.i(TAG, "-----------------------------------------");
                     }
+
+                    // Manage the RecyclerView
+                    mRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_high_rated);
+                    mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+                        @Override
+                        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                            super.onScrollStateChanged(recyclerView, newState);
+                        }
+
+                        @Override
+                        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                            super.onScrolled(recyclerView, dx, dy);
+
+                            LinearLayoutManager llm = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+                            MovieAdapter adapter = (MovieAdapter) mRecyclerView.getAdapter();
+
+                            if(catalog.results.size() == llm.findLastCompletelyVisibleItemPosition() + 1) {
+
+                            }
+                        }
+                    });
+
+                    LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+                    llm.setOrientation(LinearLayoutManager.VERTICAL);
+                    mRecyclerView.setLayoutManager(llm);
+
+                    MovieAdapter adapter = new MovieAdapter(getActivity(), catalog.results);
+                    mRecyclerView.setAdapter(adapter);
                 }
             }
 
@@ -109,6 +146,8 @@ public class HighRated extends Fragment {
                 Log.e(TAG, "Erro: " + t.getMessage());
             }
         });
+
+
 
         return rootview;
     }
