@@ -11,8 +11,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import me.leofontes.movies.Adapters.MovieAdapter;
+import me.leofontes.movies.Interfaces.RecyclerViewOnClickListenerHack;
 import me.leofontes.movies.Models.Movie;
 import me.leofontes.movies.Models.MoviesCatalog;
 import retrofit2.Call;
@@ -30,7 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Use the {@link HighRated#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HighRated extends Fragment {
+public class HighRated extends Fragment implements RecyclerViewOnClickListenerHack {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -137,6 +139,7 @@ public class HighRated extends Fragment {
                     mRecyclerView.setLayoutManager(llm);
 
                     MovieAdapter adapter = new MovieAdapter(getActivity(), catalog.results);
+                    adapter.setmRecyclerViewOnClickListenerHack(HighRated.this);
                     mRecyclerView.setAdapter(adapter);
                 }
             }
@@ -174,6 +177,11 @@ public class HighRated extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void OnClickListener(View view, int position) {
+        Toast.makeText(getActivity(), "Position: " + position, Toast.LENGTH_SHORT).show();
     }
 
     /**

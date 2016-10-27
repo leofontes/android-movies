@@ -19,6 +19,8 @@ public class MovieDetailActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootview = inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
+
+
         return rootview;
     }
 }

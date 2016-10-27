@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import me.leofontes.movies.Interfaces.RecyclerViewOnClickListenerHack;
 import me.leofontes.movies.Models.Movie;
 import me.leofontes.movies.R;
 
@@ -25,6 +26,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
     private LayoutInflater mLayoutInflater;
     private Context mContext;
     private String baseImage = "http://image.tmdb.org/t/p/w185/";
+    private RecyclerViewOnClickListenerHack mRecyclerViewOnClickListenerHack;
 
     public MovieAdapter(Context c, List<Movie> l) {
         mList = l;
@@ -53,7 +55,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
         return mList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public void setmRecyclerViewOnClickListenerHack(RecyclerViewOnClickListenerHack r) {
+        mRecyclerViewOnClickListenerHack = r;
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public ImageView ivPoster;
         public TextView ivTitle;
 
@@ -62,6 +68,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
 
             ivPoster = (ImageView) itemView.findViewById(R.id.imageview_item_poster);
             ivTitle = (TextView) itemView.findViewById(R.id.textview_item_title);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if(mRecyclerViewOnClickListenerHack != null) {
+                mRecyclerViewOnClickListenerHack.OnClickListener(v, getPosition());
+            }
         }
     }
 }
