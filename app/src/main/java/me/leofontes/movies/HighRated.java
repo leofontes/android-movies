@@ -1,6 +1,7 @@
 package me.leofontes.movies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -181,7 +182,13 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
 
     @Override
     public void OnClickListener(View view, int position) {
-        Toast.makeText(getActivity(), "Position: " + position, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
+        intent.putExtra("originaltitle", catalog.results.get(position).original_title);
+        intent.putExtra("synopsis", catalog.results.get(position).overview);
+        intent.putExtra("userrating", "" + catalog.results.get(position).vote_average);
+        intent.putExtra("releasedate", catalog.results.get(position).release_date);
+        intent.putExtra("poster", catalog.results.get(position).backdrop_path);
+        startActivity(intent);
     }
 
     /**
