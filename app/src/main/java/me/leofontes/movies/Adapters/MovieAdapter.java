@@ -32,7 +32,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.i("LOG", "onCreateViewHolder");
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_movie, parent, false);
         MyViewHolder mvh = new MyViewHolder(v);
 
@@ -41,7 +40,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Log.i("LOG", "onBindViewHolder");
         Picasso.with(holder.itemView.getContext()).load(baseImage + mList.get(position).backdrop_path).into(holder.ivPoster);
         holder.ivTitle.setText(mList.get(position).original_title);
     }

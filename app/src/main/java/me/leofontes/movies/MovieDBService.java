@@ -9,11 +9,13 @@ import retrofit2.http.GET;
  */
 
 public interface MovieDBService {
-    public static final String BASE_URL = "https://api.themoviedb.org/3/discover/";
+    public static final String BASE_URL = "https://api.themoviedb.org/3/";
 
-    @GET("movie?api_key=ac6ebfcd9300aeee710aef10fe23e547&sort_by=popularity.desc")
+    @GET("discover/movie?api_key=ac6ebfcd9300aeee710aef10fe23e547&sort_by=popularity.desc")
     Call<MoviesCatalog> listCatalogPopular();
 
-    @GET("movie?api_key=ac6ebfcd9300aeee710aef10fe23e547&sort_by=vote_average.desc")
+    @GET("discover/movie?api_key=ac6ebfcd9300aeee710aef10fe23e547&sort_by=vote_average.desc")
     Call<MoviesCatalog> listCatalogHighRated();
+
+    //@GET("movie/510/videos?api_key=ac6ebfcd9300aeee710aef10fe23e547");
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_movie_detail"
@@ -11,115 +11,134 @@
     android:background="@color/defaultGray">
 
 
-    <ImageView
-        android:layout_width="match_parent"
-        app:srcCompat="@drawable/side_nav_bar"
-        android:id="@+id/imageview_detail_poster"
-        android:layout_height="150sp" />
-
-    <TextView
-        android:text="Titulo filme"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textview_detail_titulo"
-        android:textColor="@color/defaultRed"
-        android:background="@color/white"
-        android:textStyle="bold"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:paddingTop="5sp"
-        android:paddingBottom="5sp" />
-
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/defaultLightGray"
-        android:paddingTop="5sp"
-        android:paddingBottom="5sp">
+        android:layout_height="match_parent">
 
         <TextView
-            android:text="@string/detail_label_synopsis"
-            android:layout_width="0dp"
+            android:text="Titulo filme"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textview_label_synopsis"
-            android:layout_weight="1"
-            android:textColor="@android:color/black"
-            android:textAlignment="center"
-            android:layout_gravity="center_vertical"
-            android:textStyle="bold" />
+            android:id="@+id/textview_detail_titulo"
+            android:textColor="@color/defaultRed"
+            android:background="@color/defaultLightGray"
+            android:textStyle="bold"
+            android:textAlignment="textStart"
+            android:textSize="24sp"
+            android:paddingTop="25sp"
+            android:paddingBottom="25sp"
+            android:paddingLeft="15sp" />
 
-        <TextView
-            android:text="Lorem ipsun something something something something Lorem Inpsuundsopjdojisfijfjdpoj"
-            android:layout_width="0dp"
+        <ImageView
+            android:layout_width="match_parent"
+            app:srcCompat="@drawable/side_nav_bar"
+            android:id="@+id/imageview_detail_poster"
+            android:layout_height="150sp"
+            android:scaleType="center" />
+
+        <Button
+            android:text="@string/detail_button_favorite"
             android:layout_height="wrap_content"
-            android:id="@+id/textview_detail_synopsis"
-            android:layout_weight="2"
-            android:textColor="@android:color/black"
-            android:textAlignment="center"
-            android:layout_gravity="center_vertical"
-            android:paddingRight="5sp"
-            android:paddingLeft="5sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="5sp"
-        android:paddingTop="5sp">
-
-        <TextView
-            android:text="@string/detail_label_user_rating"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/textview_label_user_rating"
-            android:layout_weight="1"
-            android:textAlignment="center"
-            android:layout_gravity="center_vertical"
+            android:id="@+id/button"
+            android:layout_width="200sp"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/defaultRed"
+            android:layout_margin="5sp"
+            android:capitalize="characters"
             android:textColor="@color/white" />
 
-        <TextView
-            android:text="4/5"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textview_detail_user_rating"
-            android:layout_weight="2"
-            android:textAlignment="center"
-            android:layout_gravity="center_vertical"
-            android:textColor="@color/white" />
+            android:background="@color/defaultLightGray"
+            android:paddingTop="5sp"
+            android:paddingBottom="5sp">
 
+            <TextView
+                android:text="@string/detail_label_synopsis"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/textview_label_synopsis"
+                android:layout_weight="1"
+                android:textColor="@android:color/black"
+                android:textAlignment="center"
+                android:layout_gravity="center_vertical"
+                android:textStyle="bold" />
+
+            <TextView
+                android:text="Lorem ipsun something something something something Lorem Inpsuundsopjdojisfijfjdpoj"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/textview_detail_synopsis"
+                android:layout_weight="2"
+                android:textColor="@android:color/black"
+                android:textAlignment="center"
+                android:layout_gravity="center_vertical"
+                android:paddingRight="5sp"
+                android:paddingLeft="5sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5sp"
+            android:paddingTop="5sp">
+
+            <TextView
+                android:text="@string/detail_label_user_rating"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/textview_label_user_rating"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:text="4/5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/textview_detail_user_rating"
+                android:layout_weight="2"
+                android:textAlignment="center"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/defaultLightGray"
+            android:paddingTop="5sp"
+            android:paddingBottom="5sp">
+
+            <TextView
+                android:text="@string/detail_label_release_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/textview_label_release_date"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:layout_gravity="center_vertical"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
+            <TextView
+                android:text="20/02/1998"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/textview_detail_release_date"
+                android:layout_weight="2"
+                android:textColor="@color/black"
+                android:layout_gravity="center_vertical"
+                android:textAlignment="center" />
+        </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/defaultLightGray"
-        android:paddingTop="5sp"
-        android:paddingBottom="5sp">
-
-        <TextView
-            android:text="@string/detail_label_release_date"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/textview_label_release_date"
-            android:layout_weight="1"
-            android:textColor="@color/black"
-            android:layout_gravity="center_vertical"
-            android:textAlignment="center"
-            android:textStyle="bold" />
-
-        <TextView
-            android:text="20/02/1998"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/textview_detail_release_date"
-            android:layout_weight="2"
-            android:textColor="@color/black"
-            android:layout_gravity="center_vertical"
-            android:textAlignment="center" />
-    </LinearLayout>
-
-</LinearLayout>
+</ScrollView>
