@@ -36,12 +36,16 @@ public class ReviewAdapter  extends RecyclerView.Adapter<ReviewAdapter.MyViewHol
         mBaseAuthor = parent.getResources().getString(R.string.review_base_author);
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_review, parent, false);
-        MyViewHolder mvh = new MyViewHolder(v);
+        final MyViewHolder mvh = new MyViewHolder(v);
 
         mvh.ivClickable.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("TAG", "shhus");
+                if(mvh.ivContent.getVisibility() == View.GONE) {
+                    mvh.ivContent.setVisibility(View.VISIBLE);
+                } else {
+                    mvh.ivContent.setVisibility(View.GONE);
+                }
             }
         });
 
