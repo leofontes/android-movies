@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="me.leofontes.movies.MovieDetailActivityFragment"
+    tools:context="me.leofontes.movies.Fragments.MovieDetailActivityFragment"
     tools:showIn="@layout/activity_movie_detail"
     android:background="@color/defaultGray">
 

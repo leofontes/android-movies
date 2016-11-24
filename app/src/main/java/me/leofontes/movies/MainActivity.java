@@ -13,6 +13,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import me.leofontes.movies.Fragments.About;
+import me.leofontes.movies.Fragments.HighRated;
+import me.leofontes.movies.Fragments.Home;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         HighRated.OnFragmentInteractionListener, Home.OnFragmentInteractionListener, About.OnFragmentInteractionListener {

@@ -1,4 +1,4 @@
-package me.leofontes.movies;
+package me.leofontes.movies.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,20 +7,20 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import me.leofontes.movies.Adapters.MovieAdapter;
+import me.leofontes.movies.Interfaces.MovieDBService;
 import me.leofontes.movies.Interfaces.RecyclerViewOnClickListenerHack;
 import me.leofontes.movies.Models.Movie;
 import me.leofontes.movies.Models.MoviesCatalog;
+import me.leofontes.movies.MovieDetailActivity;
+import me.leofontes.movies.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

@@ -1,4 +1,4 @@
-package me.leofontes.movies;
+package me.leofontes.movies.Fragments;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+
+import me.leofontes.movies.R;
 
 /**
  * A placeholder fragment containing a simple view.
