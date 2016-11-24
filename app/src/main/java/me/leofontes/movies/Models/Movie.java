@@ -5,6 +5,7 @@ package me.leofontes.movies.Models;
  */
 
 public class Movie {
+    public String id;
     public String original_title;
     public String backdrop_path;
     public String overview;

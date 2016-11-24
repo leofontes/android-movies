@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5sp"
+    android:background="@color/defaultRed">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5sp">
+
+        <TextView
+            android:text="Review #1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textview_review_number"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:textColor="@color/defaultLightGray" />
+
+        <TextView
+            android:text="Autor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textview_review_author"
+            android:layout_weight="2"
+            android:textAlignment="center"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+    <TextView
+        android:text="Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsum  Lorem ipsumLorem ipsum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textview_review_content"
+        android:textColor="@color/white"
+        android:layout_marginBottom="10sp" />
+
+</LinearLayout>

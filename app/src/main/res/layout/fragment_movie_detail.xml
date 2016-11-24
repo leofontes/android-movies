@@ -34,8 +34,8 @@
             android:layout_width="match_parent"
             app:srcCompat="@drawable/side_nav_bar"
             android:id="@+id/imageview_detail_poster"
-            android:layout_height="150sp"
-            android:scaleType="center" />
+            android:scaleType="fitXY"
+            android:layout_height="200sp" />
 
         <Button
             android:text="@string/detail_button_favorite"
@@ -139,6 +139,22 @@
                 android:layout_gravity="center_vertical"
                 android:textAlignment="center" />
         </LinearLayout>
+
+        <TextView
+            android:text="@string/detail_label_reviews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textview_label_reviews"
+            android:textColor="@color/white"
+            android:textAlignment="center"
+            android:textSize="18sp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/recyclerview_reviews"
+            app:layoutManager="android.support.v7.widget.GridLayoutManager"
+            android:scrollbars="vertical"/>
     </LinearLayout>
 
 </ScrollView>

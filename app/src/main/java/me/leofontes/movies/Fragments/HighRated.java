@@ -27,6 +27,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static me.leofontes.movies.Utility.isOnline;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,7 +43,7 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static final String TAG = "HOME_TAG";
+    private static final String TAG = "HIGHRATED_TAG";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -90,7 +92,7 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
         // Inflate the layout for this fragment
         rootview = inflater.inflate(R.layout.fragment_high_rated, container, false);
 
-        if(isOnline()) {
+        if(isOnline(getActivity())) {
             // Retrofit stuff
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(MovieDBService.BASE_URL)
@@ -108,15 +110,15 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
                     } else {
                         catalog = response.body();
 
-                        for(Movie m : catalog.results) {
-                            Log.i(TAG, "Original Title: " + m.original_title);
-                            Log.i(TAG, "Overview: " + m.overview);
-                            Log.i(TAG, "Backdrop: " + m.backdrop_path);
-                            Log.i(TAG, "Vote Average: " + m.vote_average);
-                            Log.i(TAG, "Release date: " + m.release_date);
-
-                            Log.i(TAG, "-----------------------------------------");
-                        }
+//                        for(Movie m : catalog.results) {
+//                            Log.i(TAG, "Original Title: " + m.original_title);
+//                            Log.i(TAG, "Overview: " + m.overview);
+//                            Log.i(TAG, "Backdrop: " + m.backdrop_path);
+//                            Log.i(TAG, "Vote Average: " + m.vote_average);
+//                            Log.i(TAG, "Release date: " + m.release_date);
+//
+//                            Log.i(TAG, "-----------------------------------------");
+//                        }
 
                         // Manage the RecyclerView
                         mRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_high_rated);
@@ -129,13 +131,6 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
                             @Override
                             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                                 super.onScrolled(recyclerView, dx, dy);
-
-                                LinearLayoutManager llm = (LinearLayoutManager) mRecyclerView.getLayoutManager();
-                                MovieAdapter adapter = (MovieAdapter) mRecyclerView.getAdapter();
-
-                                if(catalog.results.size() == llm.findLastCompletelyVisibleItemPosition() + 1) {
-
-                                }
                             }
                         });
 
@@ -185,6 +180,7 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
     @Override
     public void OnClickListener(View view, int position) {
         Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
+        intent.putExtra("id", catalog.results.get(position).id);
         intent.putExtra("originaltitle", catalog.results.get(position).original_title);
         intent.putExtra("synopsis", catalog.results.get(position).overview);
         intent.putExtra("userrating", "" + catalog.results.get(position).vote_average);
@@ -206,11 +202,5 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    public boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }
