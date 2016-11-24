@@ -10,7 +10,8 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5sp">
+        android:layout_marginBottom="5sp"
+        android:id="@+id/linearlayout_clickable_review">
 
         <TextView
             android:text="Review #1"

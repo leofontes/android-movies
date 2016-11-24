@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -36,6 +38,13 @@ public class ReviewAdapter  extends RecyclerView.Adapter<ReviewAdapter.MyViewHol
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_review, parent, false);
         MyViewHolder mvh = new MyViewHolder(v);
 
+        mvh.ivClickable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("TAG", "shhus");
+            }
+        });
+
         return mvh;
     }
 
@@ -56,6 +65,7 @@ public class ReviewAdapter  extends RecyclerView.Adapter<ReviewAdapter.MyViewHol
         public TextView ivNumber;
         public TextView ivAuthor;
         public TextView ivContent;
+        public LinearLayout ivClickable;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -63,6 +73,7 @@ public class ReviewAdapter  extends RecyclerView.Adapter<ReviewAdapter.MyViewHol
             ivNumber = (TextView) itemView.findViewById(R.id.textview_review_number);
             ivAuthor = (TextView) itemView.findViewById(R.id.textview_review_author);
             ivContent = (TextView) itemView.findViewById(R.id.textview_review_content);
+            ivClickable = (LinearLayout) itemView.findViewById(R.id.linearlayout_clickable_review);
         }
     }
 }
