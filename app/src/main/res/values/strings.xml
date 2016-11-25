@@ -25,8 +25,15 @@
     <string name="detail_label_release_date">Release Date</string>
     <string name="detail_button_favorite">save favorite</string>
     <string name="detail_label_reviews">Reviews</string>
+    <string name="detail_label_trailers">Trailers</string>
 
     <!-- REVIEWS -->
     <string name="review_base_number">Review</string>
     <string name="review_base_author">by</string>
+
+    <!-- VIDEOS -->
+    <string name="video_base_number">Trailer</string>
+
+    <!-- ERRORS -->
+    <string name="error_no_internet">Looks like you dont have Internet :(</string>
 </resources>

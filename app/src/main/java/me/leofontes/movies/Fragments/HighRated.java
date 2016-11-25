@@ -135,7 +135,7 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
                         });
 
 
-                        MovieAdapter adapter = new MovieAdapter(getActivity(), catalog.results);
+                        MovieAdapter adapter = new MovieAdapter(catalog.results);
                         adapter.setmRecyclerViewOnClickListenerHack(HighRated.this);
                         mRecyclerView.setAdapter(adapter);
                     }

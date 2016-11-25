@@ -4,14 +4,16 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="5sp"
-    android:background="@color/defaultRed">
+    android:background="@color/defaultLightGray">
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5sp"
-        android:id="@+id/linearlayout_clickable_review">
+        android:id="@+id/linearlayout_clickable_review"
+        android:layout_marginLeft="30sp"
+        android:layout_marginRight="30sp">
 
         <TextView
             android:text="Review #1"
@@ -19,15 +21,15 @@
             android:layout_height="wrap_content"
             android:id="@+id/textview_review_number"
             android:layout_weight="1"
-            android:textColor="@color/defaultLightGray" />
+            android:textColor="@color/defaultRed" />
 
         <TextView
             android:text="Autor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textview_review_author"
-            android:layout_weight="2"
-            android:textAlignment="center"
+            android:layout_weight="3"
+            android:textAlignment="textEnd"
             android:textColor="@color/black" />
     </LinearLayout>
 
@@ -36,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textview_review_content"
-        android:textColor="@color/white"
+        android:textColor="@color/defaultGray"
         android:layout_marginBottom="10sp"
         android:visibility="gone" />
 

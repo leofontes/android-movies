@@ -21,7 +21,7 @@ import me.leofontes.movies.R;
  * Created by leo on 24/11/16.
  */
 
-public class ReviewAdapter  extends RecyclerView.Adapter<ReviewAdapter.MyViewHolder> {
+public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.MyViewHolder> {
     private List<Review> mList;
     private String mBaseNumber;
     private String mBaseAuthor;

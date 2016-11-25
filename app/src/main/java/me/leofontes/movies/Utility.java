@@ -14,4 +14,8 @@ public class Utility {
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
+
+    public static String genYoutubeUrl(String key) {
+        return "https://www.youtube.com/watch?v=" + key;
+    }
 }

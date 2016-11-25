@@ -10,13 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import me.leofontes.movies.Adapters.ReviewAdapter;
+import me.leofontes.movies.Adapters.VideoAdapter;
 import me.leofontes.movies.Interfaces.MovieDBService;
-import me.leofontes.movies.Models.Review;
 import me.leofontes.movies.Models.ReviewCatalog;
+import me.leofontes.movies.Models.Video;
+import me.leofontes.movies.Models.VideoCatalog;
 import me.leofontes.movies.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,6 +45,9 @@ public class MovieDetailActivityFragment extends Fragment {
 
     private ReviewCatalog reviewCatalog;
     private RecyclerView reviewRecyclerView;
+
+    private VideoCatalog videoCatalog;
+    private RecyclerView videoRecyclerView;
 
     public MovieDetailActivityFragment() {
     }
@@ -73,15 +79,17 @@ public class MovieDetailActivityFragment extends Fragment {
             Picasso.with(getActivity()).load(mBaseImage + mPoster).into(imageViewPoster);
         }
 
-        //Fetch the Reviews
+        // Ensure it has Internet
         if(isOnline(getActivity())) {
+            //Instantiate Retrofit
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(MovieDBService.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
             MovieDBService service = retrofit.create(MovieDBService.class);
-            Call<ReviewCatalog> requestReviews = service.listReviews(mId);
 
+            //Fetch Reviews
+            Call<ReviewCatalog> requestReviews = service.listReviews(mId);
             requestReviews.enqueue(new Callback<ReviewCatalog>() {
                 @Override
                 public void onResponse(Call<ReviewCatalog> call, Response<ReviewCatalog> response) {
@@ -97,17 +105,6 @@ public class MovieDetailActivityFragment extends Fragment {
 
                         //Manage the recycler view with the reviews
                         reviewRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_reviews);
-                        reviewRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-                            @Override
-                            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                                super.onScrollStateChanged(recyclerView, newState);
-                            }
-
-                            @Override
-                            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                                super.onScrolled(recyclerView, dx, dy);
-                            }
-                        });
 
                         ReviewAdapter reviewAdapter = new ReviewAdapter(reviewCatalog.results);
                         reviewRecyclerView.setAdapter(reviewAdapter);
@@ -119,6 +116,34 @@ public class MovieDetailActivityFragment extends Fragment {
                     Log.e(TAG, "Erro: " + t.getMessage());
                 }
             });
+
+            //Fetch Videos (Trailers)
+            Call<VideoCatalog> requestVideos = service.listVideos(mId);
+            requestVideos.enqueue(new Callback<VideoCatalog>() {
+                @Override
+                public void onResponse(Call<VideoCatalog> call, Response<VideoCatalog> response) {
+                    videoCatalog = response.body();
+
+//                    for(Video v : videoCatalog.results) {
+//                        Log.i(TAG, "Site: " + v.site);
+//                        Log.i(TAG, "Name: " + v.name);
+//                        Log.i(TAG, "Key: " + v.key);
+//                        Log.i(TAG, "Type: " + v.type);
+//                    }
+
+                    videoRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_videos);
+
+                    VideoAdapter videoAdapter = new VideoAdapter(videoCatalog.results);
+                    videoRecyclerView.setAdapter(videoAdapter);
+                }
+
+                @Override
+                public void onFailure(Call<VideoCatalog> call, Throwable t) {
+
+                }
+            });
+        } else {
+            Toast.makeText(getContext(), getResources().getString(R.string.error_no_internet), Toast.LENGTH_SHORT).show();
         }
 
         return rootview;

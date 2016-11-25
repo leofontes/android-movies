@@ -26,7 +26,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
     private String baseImage = "http://image.tmdb.org/t/p/w185/";
     private RecyclerViewOnClickListenerHack mRecyclerViewOnClickListenerHack;
 
-    public MovieAdapter(Context c, List<Movie> l) {
+    public MovieAdapter(List<Movie> l) {
         mList = l;
     }
 

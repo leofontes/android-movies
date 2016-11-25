@@ -131,7 +131,7 @@ public class Home extends Fragment implements RecyclerViewOnClickListenerHack {
                             }
                         });
 
-                        MovieAdapter adapter = new MovieAdapter(getActivity(), catalog.results);
+                        MovieAdapter adapter = new MovieAdapter(catalog.results);
                         adapter.setmRecyclerViewOnClickListenerHack(Home.this);
                         mRecyclerView.setAdapter(adapter);
                     }
