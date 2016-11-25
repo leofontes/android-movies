@@ -14,12 +14,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import me.leofontes.movies.Fragments.About;
+import me.leofontes.movies.Fragments.Favorite;
 import me.leofontes.movies.Fragments.HighRated;
 import me.leofontes.movies.Fragments.Home;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        HighRated.OnFragmentInteractionListener, Home.OnFragmentInteractionListener, About.OnFragmentInteractionListener {
+        HighRated.OnFragmentInteractionListener, Home.OnFragmentInteractionListener, About.OnFragmentInteractionListener, Favorite.OnFragmentInteractionListener {
     FragmentManager fragmentManager;
     Fragment fragment;
 
@@ -91,6 +92,9 @@ public class MainActivity extends AppCompatActivity
             fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
         } else if (id == R.id.nav_about) {
             fragment = new About();
+            fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
+        } else if (id == R.id.nav_favorite) {
+            fragment = new Favorite();
             fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
         }
 

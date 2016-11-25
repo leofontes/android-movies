@@ -80,3 +80,4 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder
         }
     }
 }
+
