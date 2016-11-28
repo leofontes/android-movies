@@ -17,6 +17,8 @@ public class ContractDB {
         public static final String COLUMN_RATING = "rating";
         public static final String COLUMN_RELEASE_DATE = "release_date";
 
+        public static final String[] COLUMNS = {_ID, COLUMN_NAME, COLUMN_SYNOPSIS, COLUMN_IMAGE, COLUMN_RATING, COLUMN_RELEASE_DATE};
+
         //Create String
         public static final String SQL_CREATE = "CREATE TABLE " + TABLE_NAME + " (" +
                 _ID + " INTEGER PRIMARY KEY, " +
@@ -37,6 +39,8 @@ public class ContractDB {
         //Foreign key
         public static final String COLUMN_MOVIE = "movie_id";
 
+        public static final String[] COLUMNS = {_ID, COLUMN_AUTHOR, COLUMN_CONTENT, COLUMN_MOVIE};
+
         //Create String
         public static final String SQL_CREATE = "CREATE TABLE " + TABLE_NAME + " (" +
                 _ID + " INTEGER PRIMARY KEY, " +
@@ -55,6 +59,8 @@ public class ContractDB {
         public static final String COLUMN_NAME = "name";
         //Foreign key
         public static final String COLUMN_MOVIE = "movie_id";
+
+        public static final String[] COLUMNS = {_ID, COLUMN_KEY, COLUMN_NAME, COLUMN_MOVIE};
 
         //Create String
         public static final String SQL_CREATE = "CREATE TABLE " + TABLE_NAME + " (" +
