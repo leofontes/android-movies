@@ -18,23 +18,12 @@ import me.leofontes.movies.Models.Video;
 public class MovieDBAdapter {
     private SQLiteDatabase db;
     private MovieDBHelper dbHelper;
-    private final Context context;
-
-    private static MovieDBAdapter sInstance;
 
     public static final String DB_NAME = "movies.db";
     public static int DB_VERSION = 1;
 
-    public static synchronized MovieDBAdapter getInstance(Context context) {
-        if(sInstance == null) {
-            sInstance = new MovieDBAdapter(context.getApplicationContext());
-        }
-        return sInstance;
-    }
-
-    private MovieDBAdapter(Context ctx) {
-        context = ctx;
-        dbHelper = new MovieDBHelper(context, DB_NAME, null, DB_VERSION);
+    public MovieDBAdapter(Context ctx) {
+        dbHelper = new MovieDBHelper(ctx, DB_NAME, null, DB_VERSION);
     }
 
     public void open() throws SQLiteException {
