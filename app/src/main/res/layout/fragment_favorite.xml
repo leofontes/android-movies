@@ -2,12 +2,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="me.leofontes.movies.Fragments.Favorite">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
+    <android.support.v7.widget.RecyclerView
+        app:layoutManager="android.support.v7.widget.GridLayoutManager"
+        app:spanCount="@integer/colunas"
+        android:scrollbars="vertical"
+        android:id="@+id/recyclerview_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </FrameLayout>
