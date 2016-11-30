@@ -180,12 +180,16 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
     @Override
     public void OnClickListener(View view, int position) {
         Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
+
         intent.putExtra("id", catalog.results.get(position).id);
         intent.putExtra("originaltitle", catalog.results.get(position).original_title);
         intent.putExtra("synopsis", catalog.results.get(position).overview);
         intent.putExtra("userrating", "" + catalog.results.get(position).vote_average);
         intent.putExtra("releasedate", catalog.results.get(position).release_date);
         intent.putExtra("poster", catalog.results.get(position).backdrop_path);
+
+        intent.putExtra("favorite", false);
+
         startActivity(intent);
     }
 

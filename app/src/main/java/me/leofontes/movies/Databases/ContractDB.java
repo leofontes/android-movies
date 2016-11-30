@@ -60,7 +60,7 @@ public class ContractDB {
         //Foreign key
         public static final String COLUMN_MOVIE = "movie_id";
 
-        public static final String[] COLUMNS = {_ID, COLUMN_KEY, COLUMN_NAME, COLUMN_MOVIE};
+        public static final String[] COLUMNS = {COLUMN_KEY, COLUMN_NAME, COLUMN_MOVIE};
 
         //Create String
         public static final String SQL_CREATE = "CREATE TABLE " + TABLE_NAME + " (" +

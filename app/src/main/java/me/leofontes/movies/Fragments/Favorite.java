@@ -1,6 +1,7 @@
 package me.leofontes.movies.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,10 +18,12 @@ import java.util.List;
 import me.leofontes.movies.Adapters.MovieAdapter;
 import me.leofontes.movies.Databases.ContractDB;
 import me.leofontes.movies.Databases.MovieDBAdapter;
+import me.leofontes.movies.Interfaces.RecyclerViewOnClickListenerHack;
 import me.leofontes.movies.Models.Movie;
+import me.leofontes.movies.MovieDetailActivity;
 import me.leofontes.movies.R;
 
-public class Favorite extends Fragment {
+public class Favorite extends Fragment implements RecyclerViewOnClickListenerHack {
     private static final String TAG = "FAV_TAG";
 
     private MovieDBAdapter dbAdapter;
@@ -55,6 +58,7 @@ public class Favorite extends Fragment {
         dbAdapter.open();
 
         mMovieAdapter = new MovieAdapter(mArrayList);
+        mMovieAdapter.setmRecyclerViewOnClickListenerHack(Favorite.this);
         updateList();
 
         mRecyclerView.setAdapter(mMovieAdapter);
@@ -109,6 +113,22 @@ public class Favorite extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void OnClickListener(View view, int position) {
+        Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
+
+        intent.putExtra("id", mArrayList.get(position).id);
+        intent.putExtra("originaltitle", mArrayList.get(position).original_title);
+        intent.putExtra("synopsis", mArrayList.get(position).overview);
+        intent.putExtra("userrating", "" + mArrayList.get(position).vote_average);
+        intent.putExtra("releasedate", mArrayList.get(position).release_date);
+        intent.putExtra("poster", mArrayList.get(position).backdrop_path);
+
+        intent.putExtra("favorite", true);
+
+        startActivity(intent);
     }
 
     /**

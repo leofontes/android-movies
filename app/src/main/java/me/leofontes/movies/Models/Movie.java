@@ -12,6 +12,8 @@ public class Movie {
     public double vote_average;
     public String release_date;
 
+    public Movie(){};
+
     public Movie(String id, String original_title, String backdrop_path, String overview, double vote_average, String release_date) {
         this.id = id;
         this.original_title = original_title;

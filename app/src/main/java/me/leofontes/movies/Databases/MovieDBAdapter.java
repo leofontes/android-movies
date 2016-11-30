@@ -93,26 +93,24 @@ public class MovieDBAdapter {
         );
     }
 
-    public Cursor getReviews(int movieId) {
-        String[] selectionArgs = {movieId + ""};
+    public Cursor getReviews(String movieId) {
         return db.query(
                 ContractDB.ReviewContract.TABLE_NAME,
                 ContractDB.ReviewContract.COLUMNS,
-                ContractDB.ReviewContract.COLUMN_MOVIE,
-                selectionArgs,
+                ContractDB.ReviewContract.COLUMN_MOVIE + "=" + movieId,
+                null,
                 null,
                 null,
                 null
         );
     }
 
-    public Cursor getVideos(int movieId) {
-        String[] selectionArgs = {movieId + ""};
+    public Cursor getVideos(String movieId) {
         return db.query(
                 ContractDB.VideoContract.TABLE_NAME,
                 ContractDB.VideoContract.COLUMNS,
-                ContractDB.VideoContract.COLUMN_MOVIE,
-                selectionArgs,
+                ContractDB.VideoContract.COLUMN_MOVIE + "=" + movieId,
+                null,
                 null,
                 null,
                 null

@@ -24,6 +24,7 @@ import me.leofontes.movies.Databases.ContractDB;
 import me.leofontes.movies.Databases.MovieDBAdapter;
 import me.leofontes.movies.Interfaces.MovieDBService;
 import me.leofontes.movies.Models.Movie;
+import me.leofontes.movies.Models.Review;
 import me.leofontes.movies.Models.ReviewCatalog;
 import me.leofontes.movies.Models.Video;
 import me.leofontes.movies.Models.VideoCatalog;
@@ -55,12 +56,15 @@ public class MovieDetailActivityFragment extends Fragment {
     private Cursor mCursor;
     private MovieDBAdapter dbAdapter;
     private boolean isFavorite;
+    private Button mFavoriteButton;
 
     private ReviewCatalog reviewCatalog;
+    private ArrayList<Review> mArraylistReviews;
     private RecyclerView reviewRecyclerView;
 
     private VideoCatalog videoCatalog;
     private RecyclerView videoRecyclerView;
+    private ArrayList<Video> mArraylistVideos;
 
     public MovieDetailActivityFragment() {
     }
@@ -95,7 +99,7 @@ public class MovieDetailActivityFragment extends Fragment {
         movie = new Movie(mId, mOriginalTitle, mPoster, mSynopsis, Double.parseDouble(mUserRating), mReleaseDate);
 
         // Ensure it has Internet
-        if(isOnline(getActivity())) {
+        if(!intent.getBooleanExtra("favorite", false) && isOnline(getActivity())) {
             //Instantiate Retrofit
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(MovieDBService.BASE_URL)
@@ -157,25 +161,66 @@ public class MovieDetailActivityFragment extends Fragment {
 
                 }
             });
+        } else if(intent.getBooleanExtra("favorite", true)) {
+            Log.i(TAG, "inside favorite true");
+
+            dbAdapter = new MovieDBAdapter(getContext());
+            dbAdapter.open();
+
+            // Fetch reviews from the database
+            mCursor = dbAdapter.getReviews(mId);
+            Review r;
+            mArraylistReviews = new ArrayList<>();
+
+            if(mCursor.moveToFirst()) {
+                do {
+                    r = new Review(
+                            mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.ReviewContract.COLUMN_AUTHOR)),
+                            mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.ReviewContract.COLUMN_CONTENT))
+                    );
+
+                    mArraylistReviews.add(r);
+                } while(mCursor.moveToNext());
+            }
+
+            reviewRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_reviews);
+
+            ReviewAdapter reviewAdapter = new ReviewAdapter(mArraylistReviews);
+            reviewRecyclerView.setAdapter(reviewAdapter);
+
+            // Fetch videos from the database
+            mCursor = dbAdapter.getVideos(mId);
+            Video v;
+            mArraylistVideos = new ArrayList<>();
+
+            if(mCursor.moveToFirst()) {
+                do {
+                    v = new Video(
+                            mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.VideoContract.COLUMN_KEY)),
+                            mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.VideoContract.COLUMN_NAME))
+                    );
+
+                    mArraylistVideos.add(v);
+                } while (mCursor.moveToNext());
+            }
+
+            videoRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_videos);
+
+            VideoAdapter videoAdapter = new VideoAdapter(mArraylistVideos);
+            videoRecyclerView.setAdapter(videoAdapter);
+
+            dbAdapter.close();
+
         } else {
             Toast.makeText(getContext(), getResources().getString(R.string.error_no_internet), Toast.LENGTH_SHORT).show();
         }
 
-        Button favoriteButton = (Button) rootview.findViewById(R.id.button_favorite);
+        mFavoriteButton = (Button) rootview.findViewById(R.id.button_favorite);
 
         isFavorite = checkFavorite();
+        changeButton();
 
-        if(isFavorite) {
-            favoriteButton.setBackgroundColor(getResources().getColor(R.color.white));
-            favoriteButton.setText(R.string.detail_button_remove_favorite);
-            favoriteButton.setTextColor(getResources().getColor(R.color.defaultRed));
-        } else {
-            favoriteButton.setBackgroundColor(getResources().getColor(R.color.defaultRed));
-            favoriteButton.setText(R.string.detail_button_add_favorite);
-            favoriteButton.setTextColor(getResources().getColor(R.color.white));
-        }
-
-        favoriteButton.setOnClickListener(new View.OnClickListener() {
+        mFavoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dbAdapter = new MovieDBAdapter(getContext());
@@ -186,9 +231,13 @@ public class MovieDetailActivityFragment extends Fragment {
                     boolean wasRemoved = dbAdapter.removeFavorite(mId);
                     if(wasRemoved) {
                         Toast.makeText(getContext(), getResources().getString(R.string.toast_removed_favorite), Toast.LENGTH_SHORT).show();
+                        //Update the button
+                        isFavorite = !isFavorite;
+                        changeButton();
                     } else {
                         Toast.makeText(getContext(), getResources().getString(R.string.error_removed_favorite), Toast.LENGTH_SHORT).show();
                     }
+
                 } else {
                     // Add to the favorite list
                     // Insert the movie
@@ -203,6 +252,10 @@ public class MovieDetailActivityFragment extends Fragment {
                     }
 
                     Toast.makeText(getContext(), getResources().getString(R.string.toast_added_favorite), Toast.LENGTH_SHORT).show();
+
+                    //Update the button
+                    isFavorite = !isFavorite;
+                    changeButton();
                 }
 
                 dbAdapter.close();
@@ -233,5 +286,17 @@ public class MovieDetailActivityFragment extends Fragment {
         dbAdapter.close();
 
         return false;
+    }
+
+    private void changeButton() {
+        if(isFavorite) {
+            mFavoriteButton.setBackgroundColor(getResources().getColor(R.color.white));
+            mFavoriteButton.setText(R.string.detail_button_remove_favorite);
+            mFavoriteButton.setTextColor(getResources().getColor(R.color.defaultRed));
+        } else {
+            mFavoriteButton.setBackgroundColor(getResources().getColor(R.color.defaultRed));
+            mFavoriteButton.setText(R.string.detail_button_add_favorite);
+            mFavoriteButton.setTextColor(getResources().getColor(R.color.white));
+        }
     }
 }

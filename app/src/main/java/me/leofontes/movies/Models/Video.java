@@ -10,4 +10,11 @@ public class Video {
     public String name;
     public String site;
     public String type;
+
+    public Video() {};
+
+    public Video(String key, String name) {
+        this.key = key;
+        this.name = name;
+    }
 }
