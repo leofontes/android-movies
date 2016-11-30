@@ -17,16 +17,16 @@ public class ContractDB {
         public static final String COLUMN_RATING = "rating";
         public static final String COLUMN_RELEASE_DATE = "release_date";
 
-        public static final String[] COLUMNS = {_ID, COLUMN_NAME, COLUMN_SYNOPSIS, COLUMN_IMAGE, COLUMN_RATING, COLUMN_RELEASE_DATE};
+        public static final String[] COLUMNS = {_ID, COLUMN_NAME, COLUMN_IMAGE, COLUMN_SYNOPSIS, COLUMN_RATING, COLUMN_RELEASE_DATE};
 
         //Create String
         public static final String SQL_CREATE = "CREATE TABLE " + TABLE_NAME + " (" +
-                _ID + " INTEGER PRIMARY KEY, " +
+                _ID + " TEXT PRIMARY KEY, " +
                 COLUMN_NAME + " TEXT NOT NULL, " +
-                COLUMN_SYNOPSIS + " TEXT NOT NULL, " +
                 COLUMN_IMAGE + " TEXT NOT NULL, " +
+                COLUMN_SYNOPSIS + " TEXT NOT NULL, " +
                 COLUMN_RATING + " REAL NOT NULL, " +
-                COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
+                COLUMN_RELEASE_DATE + " TEXT NOT NULL " +
                 " );";
     }
 
@@ -46,7 +46,7 @@ public class ContractDB {
                 _ID + " INTEGER PRIMARY KEY, " +
                 COLUMN_AUTHOR + " TEXT NOT NULL, " +
                 COLUMN_CONTENT + " TEXT NOT NULL, " +
-                COLUMN_MOVIE + " INTEGER, " +
+                COLUMN_MOVIE + " TEXT NOT NULL, " +
                 " FOREIGN KEY (" + COLUMN_MOVIE + ") REFERENCES " + MovieContract.TABLE_NAME + "(" + MovieContract._ID + ")" +
                 " );";
     }
@@ -64,7 +64,7 @@ public class ContractDB {
 
         //Create String
         public static final String SQL_CREATE = "CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_KEY + " INTEGER PRIMARY KEY, " +
+                COLUMN_KEY + " TEXT PRIMARY KEY, " +
                 COLUMN_NAME + " TEXT NOT NULL, " +
                 COLUMN_MOVIE + " TEXT NOT NULL, " +
                 " FOREIGN KEY (" + COLUMN_MOVIE + ") REFERENCES " + MovieContract.TABLE_NAME + "(" + MovieContract._ID + ")" +

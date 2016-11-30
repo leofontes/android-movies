@@ -24,7 +24,8 @@
     <string name="detail_label_synopsis">Synopsis</string>
     <string name="detail_label_user_rating">User Rating</string>
     <string name="detail_label_release_date">Release Date</string>
-    <string name="detail_button_favorite">save favorite</string>
+    <string name="detail_button_add_favorite">save favorite</string>
+    <string name="detail_button_remove_favorite">remove favorite</string>
     <string name="detail_label_reviews">Reviews</string>
     <string name="detail_label_trailers">Trailers</string>
 
@@ -35,6 +36,9 @@
     <!-- VIDEOS -->
     <string name="video_base_number">Trailer</string>
 
-    <!-- ERRORS -->
+    <!-- TOASTS -->
     <string name="error_no_internet">Looks like you dont have Internet :(</string>
+    <string name="toast_added_favorite">Added to your favorites</string>
+    <string name="error_removed_favorite">Could not remove from favorites, please try again later</string>
+    <string name="toast_removed_favorite">Removed from your favorites</string>
 </resources>

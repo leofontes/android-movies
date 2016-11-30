@@ -1,6 +1,7 @@
 package me.leofontes.movies.Fragments;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -8,15 +9,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 import me.leofontes.movies.Adapters.ReviewAdapter;
 import me.leofontes.movies.Adapters.VideoAdapter;
+import me.leofontes.movies.Databases.ContractDB;
+import me.leofontes.movies.Databases.MovieDBAdapter;
 import me.leofontes.movies.Interfaces.MovieDBService;
+import me.leofontes.movies.Models.Movie;
 import me.leofontes.movies.Models.ReviewCatalog;
 import me.leofontes.movies.Models.Video;
 import me.leofontes.movies.Models.VideoCatalog;
@@ -35,6 +42,8 @@ import static me.leofontes.movies.Utility.isOnline;
 public class MovieDetailActivityFragment extends Fragment {
     private static final String TAG = "DETAIL_TAG";
 
+    private Movie movie;
+
     private String mId;
     private String mOriginalTitle;
     private String mSynopsis;
@@ -42,6 +51,10 @@ public class MovieDetailActivityFragment extends Fragment {
     private String mReleaseDate;
     private String mBaseImage = "http://image.tmdb.org/t/p/w780/";
     private String mPoster;
+
+    private Cursor mCursor;
+    private MovieDBAdapter dbAdapter;
+    private boolean isFavorite;
 
     private ReviewCatalog reviewCatalog;
     private RecyclerView reviewRecyclerView;
@@ -78,6 +91,8 @@ public class MovieDetailActivityFragment extends Fragment {
             mPoster = intent.getStringExtra("poster");
             Picasso.with(getActivity()).load(mBaseImage + mPoster).into(imageViewPoster);
         }
+
+        movie = new Movie(mId, mOriginalTitle, mPoster, mSynopsis, Double.parseDouble(mUserRating), mReleaseDate);
 
         // Ensure it has Internet
         if(isOnline(getActivity())) {
@@ -146,6 +161,77 @@ public class MovieDetailActivityFragment extends Fragment {
             Toast.makeText(getContext(), getResources().getString(R.string.error_no_internet), Toast.LENGTH_SHORT).show();
         }
 
+        Button favoriteButton = (Button) rootview.findViewById(R.id.button_favorite);
+
+        isFavorite = checkFavorite();
+
+        if(isFavorite) {
+            favoriteButton.setBackgroundColor(getResources().getColor(R.color.white));
+            favoriteButton.setText(R.string.detail_button_remove_favorite);
+            favoriteButton.setTextColor(getResources().getColor(R.color.defaultRed));
+        } else {
+            favoriteButton.setBackgroundColor(getResources().getColor(R.color.defaultRed));
+            favoriteButton.setText(R.string.detail_button_add_favorite);
+            favoriteButton.setTextColor(getResources().getColor(R.color.white));
+        }
+
+        favoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dbAdapter = new MovieDBAdapter(getContext());
+                dbAdapter.open();
+
+                if(isFavorite) {
+                    // Remove from the list of favorites
+                    boolean wasRemoved = dbAdapter.removeFavorite(mId);
+                    if(wasRemoved) {
+                        Toast.makeText(getContext(), getResources().getString(R.string.toast_removed_favorite), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), getResources().getString(R.string.error_removed_favorite), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    // Add to the favorite list
+                    // Insert the movie
+                    dbAdapter.insertMovie(movie);
+                    // Insert all the reviews
+                    for(int i = 0; i < reviewCatalog.results.size(); i++) {
+                        dbAdapter.insertReview(reviewCatalog.results.get(i), Integer.parseInt(mId));
+                    }
+                    // Insert all the videos
+                    for(int i = 0; i < videoCatalog.results.size(); i++) {
+                        dbAdapter.insertVideo(videoCatalog.results.get(i), Integer.parseInt(mId));
+                    }
+
+                    Toast.makeText(getContext(), getResources().getString(R.string.toast_added_favorite), Toast.LENGTH_SHORT).show();
+                }
+
+                dbAdapter.close();
+            }
+        });
+
         return rootview;
+    }
+
+    private boolean checkFavorite() {
+        dbAdapter = new MovieDBAdapter(getContext());
+        dbAdapter.open();
+
+        mCursor = dbAdapter.getAllMovies();
+        String favId;
+
+        if(mCursor.moveToFirst()) {
+            do {
+                favId = mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.MovieContract._ID));
+
+                //Found the movie in the favorites list
+                if(favId.equals(mId)) {
+                    return true;
+                }
+            } while (mCursor.moveToNext());
+        }
+
+        dbAdapter.close();
+
+        return false;
     }
 }

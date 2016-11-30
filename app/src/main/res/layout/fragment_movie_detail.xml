@@ -38,9 +38,9 @@
             android:layout_height="200sp" />
 
         <Button
-            android:text="@string/detail_button_favorite"
+            android:text="@string/detail_button_add_favorite"
             android:layout_height="wrap_content"
-            android:id="@+id/button"
+            android:id="@+id/button_favorite"
             android:layout_width="200sp"
             android:layout_gravity="center_horizontal"
             android:background="@color/defaultRed"

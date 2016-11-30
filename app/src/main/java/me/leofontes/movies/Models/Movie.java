@@ -11,4 +11,13 @@ public class Movie {
     public String overview;
     public double vote_average;
     public String release_date;
+
+    public Movie(String id, String original_title, String backdrop_path, String overview, double vote_average, String release_date) {
+        this.id = id;
+        this.original_title = original_title;
+        this.backdrop_path = backdrop_path;
+        this.overview = overview;
+        this.vote_average = vote_average;
+        this.release_date = release_date;
+    }
 }

@@ -28,9 +28,9 @@ public class MovieDBAdapter {
 
     public void open() throws SQLiteException {
         try {
-            dbHelper.getWritableDatabase();
+            db = dbHelper.getWritableDatabase();
         } catch (SQLiteException e) {
-            dbHelper.getReadableDatabase();
+            db = dbHelper.getReadableDatabase();
         }
     }
 
@@ -120,12 +120,14 @@ public class MovieDBAdapter {
     }
 
     // DELETE method
-    public boolean removeFavorite(int movieId) {
-        String[] selectionArgs = {movieId + ""};
+    public boolean removeFavorite(String movieId) {
+        String whereMovie = ContractDB.MovieContract._ID + "=" + movieId;
+        String whereReview = ContractDB.ReviewContract.COLUMN_MOVIE + "=" + movieId;
+        String whereVideo = ContractDB.VideoContract.COLUMN_MOVIE + "=" + movieId;
         int reviews, videos, movies;
-        reviews = db.delete(ContractDB.ReviewContract.TABLE_NAME, ContractDB.ReviewContract.COLUMN_MOVIE, selectionArgs);
-        videos = db.delete(ContractDB.VideoContract.TABLE_NAME, ContractDB.VideoContract.COLUMN_MOVIE, selectionArgs);
-        movies = db.delete(ContractDB.MovieContract.TABLE_NAME, ContractDB.MovieContract._ID, selectionArgs);
+        reviews = db.delete(ContractDB.ReviewContract.TABLE_NAME, whereReview, null);
+        videos = db.delete(ContractDB.VideoContract.TABLE_NAME, whereVideo, null);
+        movies = db.delete(ContractDB.MovieContract.TABLE_NAME, whereMovie, null);
 
         return reviews > 0 && videos > 0 && movies > 0;
     }

@@ -1,25 +1,35 @@
 package me.leofontes.movies.Fragments;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import me.leofontes.movies.Adapters.MovieAdapter;
+import me.leofontes.movies.Databases.ContractDB;
 import me.leofontes.movies.Databases.MovieDBAdapter;
 import me.leofontes.movies.Models.Movie;
 import me.leofontes.movies.R;
 
 public class Favorite extends Fragment {
+    private static final String TAG = "FAV_TAG";
+
     private MovieDBAdapter dbAdapter;
     private List<Movie> mList;
+    private ArrayList<Movie> mArrayList;
+    private MovieAdapter mMovieAdapter;
 
     private RecyclerView mRecyclerView;
+    private Cursor mCursor;
 
     private OnFragmentInteractionListener mListener;
 
@@ -39,12 +49,42 @@ public class Favorite extends Fragment {
         View rootview = inflater.inflate(R.layout.fragment_favorite, container, false);
 
         mRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_favorite);
+        mArrayList = new ArrayList<>();
 
         dbAdapter = new MovieDBAdapter(getContext());
         dbAdapter.open();
 
+        mMovieAdapter = new MovieAdapter(mArrayList);
+        updateList();
+
+        mRecyclerView.setAdapter(mMovieAdapter);
+
+        dbAdapter.close();
 
         return rootview;
+    }
+
+    public void updateList() {
+        mCursor = dbAdapter.getAllMovies();
+        mArrayList.clear();
+
+        Movie m;
+
+        if(mCursor.moveToFirst()) {
+            do {
+                m = new Movie(
+                        mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.MovieContract._ID)),
+                        mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.MovieContract.COLUMN_NAME)),
+                        mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.MovieContract.COLUMN_IMAGE)),
+                        mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.MovieContract.COLUMN_SYNOPSIS)),
+                        mCursor.getDouble(mCursor.getColumnIndexOrThrow(ContractDB.MovieContract.COLUMN_RATING)),
+                        mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.MovieContract.COLUMN_RELEASE_DATE))
+                );
+                mArrayList.add(m);
+            } while (mCursor.moveToNext());
+        }
+
+        mMovieAdapter.notifyDataSetChanged();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
