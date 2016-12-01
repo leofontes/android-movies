@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,10 +18,12 @@ import android.view.ViewGroup;
 import me.leofontes.movies.Adapters.MovieAdapter;
 import me.leofontes.movies.Interfaces.MovieDBService;
 import me.leofontes.movies.Interfaces.RecyclerViewOnClickListenerHack;
+import me.leofontes.movies.MainActivity;
 import me.leofontes.movies.Models.Movie;
 import me.leofontes.movies.Models.MoviesCatalog;
 import me.leofontes.movies.MovieDetailActivity;
 import me.leofontes.movies.R;
+import me.leofontes.movies.Utility;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -122,6 +125,11 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
 
                         // Manage the RecyclerView
                         mRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_high_rated);
+
+                        if(MainActivity.TWO_PANES) {
+                            mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
+                        }
+
                         mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
                             @Override
                             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -179,12 +187,8 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
 
     @Override
     public void OnClickListener(View view, int position) {
-        Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
-
-        intent.putExtra("movie", catalog.results.get(position));
-        intent.putExtra("favorite", false);
-
-        startActivity(intent);
+        ((Utility.ClickCallback) getActivity())
+                .onItemSelected(catalog.results.get(position));
     }
 
     /**
@@ -201,4 +205,5 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }

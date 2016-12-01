@@ -1,5 +1,6 @@
 package me.leofontes.movies;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -10,21 +11,27 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import me.leofontes.movies.Fragments.About;
 import me.leofontes.movies.Fragments.Favorite;
 import me.leofontes.movies.Fragments.HighRated;
 import me.leofontes.movies.Fragments.Home;
+import me.leofontes.movies.Fragments.MovieDetailActivityFragment;
+import me.leofontes.movies.Models.Movie;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        HighRated.OnFragmentInteractionListener, Home.OnFragmentInteractionListener, About.OnFragmentInteractionListener, Favorite.OnFragmentInteractionListener {
+        HighRated.OnFragmentInteractionListener, Home.OnFragmentInteractionListener, About.OnFragmentInteractionListener, Favorite.OnFragmentInteractionListener,
+        Utility.ClickCallback {
 
     private FragmentManager fragmentManager;
     private Fragment fragment;
+    private View detailContainerView;
+
+    public static boolean TWO_PANES;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +50,18 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        detailContainerView = (View) findViewById(R.id.detail_container);
+
         fragmentManager = getSupportFragmentManager();
+
+        if(detailContainerView != null) {
+            TWO_PANES = true;
+            detailContainerView.setVisibility(View.INVISIBLE);
+            fragmentManager.beginTransaction().replace(R.id.detail_container, new MovieDetailActivityFragment()).commit();
+        } else {
+            TWO_PANES = false;
+        }
+
         fragment = new Home();
         fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
     }
@@ -105,5 +123,25 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void onItemSelected(Movie m) {
+        if(TWO_PANES) {
+            detailContainerView.setVisibility(View.VISIBLE);
+            fragment = new MovieDetailActivityFragment();
+
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("movie", m);
+
+            fragment.setArguments(bundle);
+
+            fragmentManager.beginTransaction().replace(R.id.detail_container, fragment).commit();
+        } else {
+            Intent intent = new Intent(this, MovieDetailActivity.class);
+            intent.putExtra("movie", m);
+            intent.putExtra("favorite", false);
+            startActivity(intent);
+        }
     }
 }

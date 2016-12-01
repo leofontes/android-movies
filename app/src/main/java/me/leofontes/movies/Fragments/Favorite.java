@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,9 +21,11 @@ import me.leofontes.movies.Adapters.MovieAdapter;
 import me.leofontes.movies.Databases.ContractDB;
 import me.leofontes.movies.Databases.MovieDBAdapter;
 import me.leofontes.movies.Interfaces.RecyclerViewOnClickListenerHack;
+import me.leofontes.movies.MainActivity;
 import me.leofontes.movies.Models.Movie;
 import me.leofontes.movies.MovieDetailActivity;
 import me.leofontes.movies.R;
+import me.leofontes.movies.Utility;
 
 public class Favorite extends Fragment implements RecyclerViewOnClickListenerHack {
     private static final String TAG = "FAV_TAG";
@@ -52,6 +56,11 @@ public class Favorite extends Fragment implements RecyclerViewOnClickListenerHac
         View rootview = inflater.inflate(R.layout.fragment_favorite, container, false);
 
         mRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_favorite);
+
+        if(MainActivity.TWO_PANES) {
+            mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
+        }
+
         mArrayList = new ArrayList<>();
 
         dbAdapter = new MovieDBAdapter(getContext());
@@ -117,12 +126,8 @@ public class Favorite extends Fragment implements RecyclerViewOnClickListenerHac
 
     @Override
     public void OnClickListener(View view, int position) {
-        Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
-
-        intent.putExtra("movie", mArrayList.get(position));
-        intent.putExtra("favorite", true);
-
-        startActivity(intent);
+        ((Utility.ClickCallback) getActivity())
+                .onItemSelected(mArrayList.get(position));
     }
 
     /**

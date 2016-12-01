@@ -79,6 +79,14 @@ public class MovieDetailActivityFragment extends Fragment {
 
         if(intent != null) {
             movie = intent.getParcelableExtra("movie");
+        }
+
+        Bundle bundle = this.getArguments();
+        if(bundle != null) {
+            movie = bundle.getParcelable("movie");
+        }
+
+        if(movie != null) {
             textViewTitle.setText(movie.original_title);
             textViewSynopsis.setText(movie.overview);
             textViewUserRating.setText(String.valueOf(movie.vote_average));
@@ -89,7 +97,7 @@ public class MovieDetailActivityFragment extends Fragment {
         //movie = new Movie(mId, mOriginalTitle, mPoster, mSynopsis, Double.parseDouble(mUserRating), mReleaseDate);
 
         // Ensure it has Internet
-        if(!intent.getBooleanExtra("favorite", false) && isOnline(getActivity())) {
+        if(!intent.getBooleanExtra("favorite", false) && isOnline(getActivity()) && movie != null) {
             //Instantiate Retrofit
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(MovieDBService.BASE_URL)
@@ -158,49 +166,50 @@ public class MovieDetailActivityFragment extends Fragment {
             dbAdapter.open();
 
             // Fetch reviews from the database
-            mCursor = dbAdapter.getReviews(movie.id);
-            Review r;
-            mArraylistReviews = new ArrayList<>();
+            if(movie != null) {
+                mCursor = dbAdapter.getReviews(movie.id);
+                Review r;
+                mArraylistReviews = new ArrayList<>();
 
-            if(mCursor.moveToFirst()) {
-                do {
-                    r = new Review(
-                            mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.ReviewContract.COLUMN_AUTHOR)),
-                            mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.ReviewContract.COLUMN_CONTENT))
-                    );
+                if(mCursor.moveToFirst()) {
+                    do {
+                        r = new Review(
+                                mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.ReviewContract.COLUMN_AUTHOR)),
+                                mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.ReviewContract.COLUMN_CONTENT))
+                        );
 
-                    mArraylistReviews.add(r);
-                } while(mCursor.moveToNext());
+                        mArraylistReviews.add(r);
+                    } while(mCursor.moveToNext());
+                }
+
+                reviewRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_reviews);
+
+                ReviewAdapter reviewAdapter = new ReviewAdapter(mArraylistReviews);
+                reviewRecyclerView.setAdapter(reviewAdapter);
+
+                // Fetch videos from the database
+                mCursor = dbAdapter.getVideos(movie.id);
+                Video v;
+                mArraylistVideos = new ArrayList<>();
+
+                if(mCursor.moveToFirst()) {
+                    do {
+                        v = new Video(
+                                mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.VideoContract.COLUMN_KEY)),
+                                mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.VideoContract.COLUMN_NAME))
+                        );
+
+                        mArraylistVideos.add(v);
+                    } while (mCursor.moveToNext());
+                }
+
+                videoRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_videos);
+
+                VideoAdapter videoAdapter = new VideoAdapter(mArraylistVideos);
+                videoRecyclerView.setAdapter(videoAdapter);
+
+                dbAdapter.close();
             }
-
-            reviewRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_reviews);
-
-            ReviewAdapter reviewAdapter = new ReviewAdapter(mArraylistReviews);
-            reviewRecyclerView.setAdapter(reviewAdapter);
-
-            // Fetch videos from the database
-            mCursor = dbAdapter.getVideos(movie.id);
-            Video v;
-            mArraylistVideos = new ArrayList<>();
-
-            if(mCursor.moveToFirst()) {
-                do {
-                    v = new Video(
-                            mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.VideoContract.COLUMN_KEY)),
-                            mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.VideoContract.COLUMN_NAME))
-                    );
-
-                    mArraylistVideos.add(v);
-                } while (mCursor.moveToNext());
-            }
-
-            videoRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_videos);
-
-            VideoAdapter videoAdapter = new VideoAdapter(mArraylistVideos);
-            videoRecyclerView.setAdapter(videoAdapter);
-
-            dbAdapter.close();
-
         } else {
             Toast.makeText(getContext(), getResources().getString(R.string.error_no_internet), Toast.LENGTH_SHORT).show();
         }
@@ -262,7 +271,7 @@ public class MovieDetailActivityFragment extends Fragment {
         mCursor = dbAdapter.getAllMovies();
         String favId;
 
-        if(mCursor.moveToFirst()) {
+        if(mCursor.moveToFirst() && movie != null) {
             do {
                 favId = mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.MovieContract._ID));
 

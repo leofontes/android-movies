@@ -17,7 +17,6 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:text="Titulo filme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textview_detail_titulo"
@@ -32,7 +31,6 @@
 
         <ImageView
             android:layout_width="match_parent"
-            app:srcCompat="@drawable/side_nav_bar"
             android:id="@+id/imageview_detail_poster"
             android:scaleType="fitXY"
             android:layout_height="200sp" />
@@ -68,7 +66,6 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:text="Lorem ipsun something something something something Lorem Inpsuundsopjdojisfijfjdpoj"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/textview_detail_synopsis"
@@ -100,7 +97,6 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:text="4/5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/textview_detail_user_rating"
@@ -131,7 +127,6 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:text="20/02/1998"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/textview_detail_release_date"

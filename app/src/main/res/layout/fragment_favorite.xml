@@ -13,5 +13,6 @@
         android:scrollbars="vertical"
         android:id="@+id/recyclerview_favorite"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="70sp" />
 </FrameLayout>

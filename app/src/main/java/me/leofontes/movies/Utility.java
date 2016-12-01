@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import me.leofontes.movies.Models.Movie;
+
 /**
  * Created by leo on 24/11/16.
  */
@@ -17,5 +19,9 @@ public class Utility {
 
     public static String genYoutubeUrl(String key) {
         return "https://www.youtube.com/watch?v=" + key;
+    }
+
+    public interface ClickCallback {
+        public void onItemSelected(Movie m);
     }
 }
