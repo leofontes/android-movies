@@ -15,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import me.leofontes.movies.Fragments.About;
 import me.leofontes.movies.Fragments.Favorite;
 import me.leofontes.movies.Fragments.HighRated;
 import me.leofontes.movies.Fragments.Home;
@@ -24,7 +23,7 @@ import me.leofontes.movies.Models.Movie;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        HighRated.OnFragmentInteractionListener, Home.OnFragmentInteractionListener, About.OnFragmentInteractionListener, Favorite.OnFragmentInteractionListener,
+        HighRated.OnFragmentInteractionListener, Home.OnFragmentInteractionListener, Favorite.OnFragmentInteractionListener,
         Utility.ClickCallback {
 
     private FragmentManager fragmentManager;
@@ -103,15 +102,18 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_popular) {
             fragment = new Home();
+            detailContainerView.setVisibility(View.VISIBLE);
             fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
         } else if (id == R.id.nav_rating) {
             fragment = new HighRated();
+            detailContainerView.setVisibility(View.VISIBLE);
             fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
         } else if (id == R.id.nav_about) {
-            fragment = new About();
-            fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
+            Intent intent = new Intent(this, AboutActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_favorite) {
             fragment = new Favorite();
+            detailContainerView.setVisibility(View.VISIBLE);
             fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
         }
 

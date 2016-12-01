@@ -16,8 +16,10 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- ABOUT -->
-    <string name="about_developer">Developed by:</string>
+    <string name="about_developer">Developed in:</string>
     <string name="about_name_developer">Laboratório Bridge</string>
+    <string name="about_author">By:</string>
+    <string name="about_myname" translatable="false">Leonardo Fontes</string>
     <string name="title_activity_movie_detail">MovieDetailActivity</string>
 
     <!-- DETAIL ACTIVITY -->
@@ -41,4 +43,5 @@
     <string name="toast_added_favorite">Added to your favorites</string>
     <string name="error_removed_favorite">Could not remove from favorites, please try again later</string>
     <string name="toast_removed_favorite">Removed from your favorites</string>
+    <string name="title_activity_about">About us</string>
 </resources>
