@@ -102,18 +102,15 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_popular) {
             fragment = new Home();
-            detailContainerView.setVisibility(View.VISIBLE);
             fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
         } else if (id == R.id.nav_rating) {
             fragment = new HighRated();
-            detailContainerView.setVisibility(View.VISIBLE);
             fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
         } else if (id == R.id.nav_about) {
             Intent intent = new Intent(this, AboutActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_favorite) {
             fragment = new Favorite();
-            detailContainerView.setVisibility(View.VISIBLE);
             fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
         }
 
