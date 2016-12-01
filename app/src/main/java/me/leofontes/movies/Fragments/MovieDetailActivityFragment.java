@@ -45,13 +45,8 @@ public class MovieDetailActivityFragment extends Fragment {
 
     private Movie movie;
 
-    private String mId;
-    private String mOriginalTitle;
-    private String mSynopsis;
-    private String mUserRating;
-    private String mReleaseDate;
     private String mBaseImage = "http://image.tmdb.org/t/p/w780/";
-    private String mPoster;
+
 
     private Cursor mCursor;
     private MovieDBAdapter dbAdapter;
@@ -83,20 +78,15 @@ public class MovieDetailActivityFragment extends Fragment {
         Intent intent = getActivity().getIntent();
 
         if(intent != null) {
-            mId = intent.getStringExtra("id");
-            mOriginalTitle = intent.getStringExtra("originaltitle");
-            textViewTitle.setText(mOriginalTitle);
-            mSynopsis = intent.getStringExtra("synopsis");
-            textViewSynopsis.setText(mSynopsis);
-            mUserRating = intent.getStringExtra("userrating");
-            textViewUserRating.setText(mUserRating);
-            mReleaseDate = intent.getStringExtra("releasedate");
-            textViewReleaseDate.setText(mReleaseDate);
-            mPoster = intent.getStringExtra("poster");
-            Picasso.with(getActivity()).load(mBaseImage + mPoster).into(imageViewPoster);
+            movie = intent.getParcelableExtra("movie");
+            textViewTitle.setText(movie.original_title);
+            textViewSynopsis.setText(movie.overview);
+            textViewUserRating.setText(String.valueOf(movie.vote_average));
+            textViewReleaseDate.setText(movie.release_date);
+            Picasso.with(getActivity()).load(mBaseImage + movie.backdrop_path).into(imageViewPoster);
         }
 
-        movie = new Movie(mId, mOriginalTitle, mPoster, mSynopsis, Double.parseDouble(mUserRating), mReleaseDate);
+        //movie = new Movie(mId, mOriginalTitle, mPoster, mSynopsis, Double.parseDouble(mUserRating), mReleaseDate);
 
         // Ensure it has Internet
         if(!intent.getBooleanExtra("favorite", false) && isOnline(getActivity())) {
@@ -108,7 +98,7 @@ public class MovieDetailActivityFragment extends Fragment {
             MovieDBService service = retrofit.create(MovieDBService.class);
 
             //Fetch Reviews
-            Call<ReviewCatalog> requestReviews = service.listReviews(mId);
+            Call<ReviewCatalog> requestReviews = service.listReviews(movie.id);
             requestReviews.enqueue(new Callback<ReviewCatalog>() {
                 @Override
                 public void onResponse(Call<ReviewCatalog> call, Response<ReviewCatalog> response) {
@@ -137,7 +127,7 @@ public class MovieDetailActivityFragment extends Fragment {
             });
 
             //Fetch Videos (Trailers)
-            Call<VideoCatalog> requestVideos = service.listVideos(mId);
+            Call<VideoCatalog> requestVideos = service.listVideos(movie.id);
             requestVideos.enqueue(new Callback<VideoCatalog>() {
                 @Override
                 public void onResponse(Call<VideoCatalog> call, Response<VideoCatalog> response) {
@@ -168,7 +158,7 @@ public class MovieDetailActivityFragment extends Fragment {
             dbAdapter.open();
 
             // Fetch reviews from the database
-            mCursor = dbAdapter.getReviews(mId);
+            mCursor = dbAdapter.getReviews(movie.id);
             Review r;
             mArraylistReviews = new ArrayList<>();
 
@@ -189,7 +179,7 @@ public class MovieDetailActivityFragment extends Fragment {
             reviewRecyclerView.setAdapter(reviewAdapter);
 
             // Fetch videos from the database
-            mCursor = dbAdapter.getVideos(mId);
+            mCursor = dbAdapter.getVideos(movie.id);
             Video v;
             mArraylistVideos = new ArrayList<>();
 
@@ -228,7 +218,7 @@ public class MovieDetailActivityFragment extends Fragment {
 
                 if(isFavorite) {
                     // Remove from the list of favorites
-                    boolean wasRemoved = dbAdapter.removeFavorite(mId);
+                    boolean wasRemoved = dbAdapter.removeFavorite(movie.id);
                     if(wasRemoved) {
                         Toast.makeText(getContext(), getResources().getString(R.string.toast_removed_favorite), Toast.LENGTH_SHORT).show();
                         //Update the button
@@ -244,11 +234,11 @@ public class MovieDetailActivityFragment extends Fragment {
                     dbAdapter.insertMovie(movie);
                     // Insert all the reviews
                     for(int i = 0; i < reviewCatalog.results.size(); i++) {
-                        dbAdapter.insertReview(reviewCatalog.results.get(i), Integer.parseInt(mId));
+                        dbAdapter.insertReview(reviewCatalog.results.get(i), Integer.parseInt(movie.id));
                     }
                     // Insert all the videos
                     for(int i = 0; i < videoCatalog.results.size(); i++) {
-                        dbAdapter.insertVideo(videoCatalog.results.get(i), Integer.parseInt(mId));
+                        dbAdapter.insertVideo(videoCatalog.results.get(i), Integer.parseInt(movie.id));
                     }
 
                     Toast.makeText(getContext(), getResources().getString(R.string.toast_added_favorite), Toast.LENGTH_SHORT).show();
@@ -277,7 +267,7 @@ public class MovieDetailActivityFragment extends Fragment {
                 favId = mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.MovieContract._ID));
 
                 //Found the movie in the favorites list
-                if(favId.equals(mId)) {
+                if(favId.equals(movie.id)) {
                     return true;
                 }
             } while (mCursor.moveToNext());

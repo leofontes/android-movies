@@ -119,13 +119,7 @@ public class Favorite extends Fragment implements RecyclerViewOnClickListenerHac
     public void OnClickListener(View view, int position) {
         Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
 
-        intent.putExtra("id", mArrayList.get(position).id);
-        intent.putExtra("originaltitle", mArrayList.get(position).original_title);
-        intent.putExtra("synopsis", mArrayList.get(position).overview);
-        intent.putExtra("userrating", "" + mArrayList.get(position).vote_average);
-        intent.putExtra("releasedate", mArrayList.get(position).release_date);
-        intent.putExtra("poster", mArrayList.get(position).backdrop_path);
-
+        intent.putExtra("movie", mArrayList.get(position));
         intent.putExtra("favorite", true);
 
         startActivity(intent);

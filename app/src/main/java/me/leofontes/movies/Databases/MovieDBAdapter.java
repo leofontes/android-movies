@@ -127,7 +127,7 @@ public class MovieDBAdapter {
         videos = db.delete(ContractDB.VideoContract.TABLE_NAME, whereVideo, null);
         movies = db.delete(ContractDB.MovieContract.TABLE_NAME, whereMovie, null);
 
-        return reviews > 0 && videos > 0 && movies > 0;
+        return reviews >= 0 && videos >= 0 && movies >= 0;
     }
 
     private class MovieDBHelper extends SQLiteOpenHelper {
