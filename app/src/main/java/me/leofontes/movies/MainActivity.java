@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity
     private View detailContainerView;
 
     public static boolean TWO_PANES;
+    public static boolean FROM_FAVORITE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,15 +103,19 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_popular) {
             fragment = new Home();
+            FROM_FAVORITE = false;
             fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
         } else if (id == R.id.nav_rating) {
             fragment = new HighRated();
+            FROM_FAVORITE = false;
             fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
         } else if (id == R.id.nav_about) {
             Intent intent = new Intent(this, AboutActivity.class);
+            FROM_FAVORITE = false;
             startActivity(intent);
         } else if (id == R.id.nav_favorite) {
             fragment = new Favorite();
+            FROM_FAVORITE = true;
             fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
         }
 
@@ -126,20 +131,20 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onItemSelected(Movie m) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("movie", m);
+        bundle.putBoolean("favorite", FROM_FAVORITE);
+
         if(TWO_PANES) {
             detailContainerView.setVisibility(View.VISIBLE);
             fragment = new MovieDetailActivityFragment();
-
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("movie", m);
 
             fragment.setArguments(bundle);
 
             fragmentManager.beginTransaction().replace(R.id.detail_container, fragment).commit();
         } else {
             Intent intent = new Intent(this, MovieDetailActivity.class);
-            intent.putExtra("movie", m);
-            intent.putExtra("favorite", false);
+            intent.putExtra("bundle", bundle);
             startActivity(intent);
         }
     }
