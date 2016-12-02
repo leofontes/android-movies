@@ -2,6 +2,7 @@ package me.leofontes.movies.Fragments;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -88,6 +89,11 @@ public class MovieDetailActivityFragment extends Fragment {
 
         mFavoriteButton = (Button) rootview.findViewById(R.id.button_favorite);
 
+        if(savedInstanceState != null && savedInstanceState.containsKey("movie")) {
+            movie = savedInstanceState.getParcelable("movie");
+            fromFavoriteList = savedInstanceState.getBoolean("favorite");
+        }
+
         return rootview;
     }
 
@@ -101,18 +107,16 @@ public class MovieDetailActivityFragment extends Fragment {
         Intent intent = getActivity().getIntent();
         if(intent != null && intent.getBundleExtra("bundle") != null) {
             bundle = intent.getBundleExtra("bundle");
-            Log.i(TAG, "first if");
         } else {
-            Log.i(TAG, "second if");
             bundle = this.getArguments();
         }
 
-        if(bundle != null) {
+        if(movie == null && bundle != null) {
             movie = bundle.getParcelable("movie");
             fromFavoriteList = bundle.getBoolean("favorite");
         }
 
-        // Check wheter the current movie is a Favorite, and change the button accordingly
+        // Check whether the current movie is a Favorite, and change the button accordingly
         isFavorite = checkFavorite();
         changeButton();
 
@@ -122,7 +126,7 @@ public class MovieDetailActivityFragment extends Fragment {
         }
 
         //Populate the Reviews and Trailers
-        if(!fromFavoriteList && isOnline(getActivity()) && movie != null) {
+        if(!fromFavoriteList && isOnline(getActivity()) && movie != null) {//Fetch info with the API
 
             //Instantiate Retrofit
             Retrofit retrofit = new Retrofit.Builder()
@@ -137,7 +141,7 @@ public class MovieDetailActivityFragment extends Fragment {
             //Fetch the reviews
             requestReviewsRetrofit(movie.id);
 
-        } else if(fromFavoriteList && movie != null){
+        } else if(fromFavoriteList && movie != null){ //Fetch info from the favorite list
 
             //Instantiate Database Helper
             dbAdapter = new MovieDBAdapter(getContext());
@@ -150,7 +154,7 @@ public class MovieDetailActivityFragment extends Fragment {
             requestReviewsDatabase(movie.id);
 
             dbAdapter.close();
-        } else if(!isOnline(getActivity())) {
+        } else if(!isOnline(getActivity())) { //User is offline
 
             //Let the user know about Internet failure
             Toast.makeText(getContext(), getResources().getString(R.string.error_no_internet), Toast.LENGTH_SHORT).show();
@@ -337,5 +341,17 @@ public class MovieDetailActivityFragment extends Fragment {
 
         VideoAdapter videoAdapter = new VideoAdapter(mArraylistVideos);
         videoRecyclerView.setAdapter(videoAdapter);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if(movie != null) {
+            outState.putParcelable("movie", movie);
+            outState.putBoolean("favorite", fromFavoriteList);
+
+            Log.i(TAG, "inside on Save instance");
+            Log.i(TAG, "onSaveinstance state movie: " + movie.original_title);
+        }
+        super.onSaveInstanceState(outState);
     }
 }

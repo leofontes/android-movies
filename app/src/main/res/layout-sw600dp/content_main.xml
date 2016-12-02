@@ -2,19 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="me.leofontes.movies.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <FrameLayout
+    <fragment
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:id="@+id/content_main">
+        android:id="@+id/content_main"
+        android:name="me.leofontes.movies.Fragments.Home"
+        tools:layout="@layout/fragment_home">
 
-    </FrameLayout>
+    </fragment>
 
     <FrameLayout
         android:layout_width="0dp"

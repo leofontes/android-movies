@@ -1,5 +1,7 @@
 package me.leofontes.movies;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,14 +59,16 @@ public class MainActivity extends AppCompatActivity
 
         if(detailContainerView != null) {
             TWO_PANES = true;
-            detailContainerView.setVisibility(View.INVISIBLE);
-            fragmentManager.beginTransaction().replace(R.id.detail_container, new MovieDetailActivityFragment()).commit();
+            //detailContainerView.setVisibility(View.INVISIBLE);
+            fragmentManager.beginTransaction().replace(R.id.detail_container, fragmentManager.findFragmentById(R.id.detail_container)).commit();
         } else {
             TWO_PANES = false;
         }
 
-        fragment = new Home();
+        fragment = fragmentManager.findFragmentById(R.id.content_main);
         fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
+
+        Log.i("MAINACTIVITY", "inside mainactivity");
     }
 
     @Override

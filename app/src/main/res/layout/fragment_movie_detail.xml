@@ -24,6 +24,7 @@
             android:background="@color/defaultLightGray"
             android:textStyle="bold"
             android:textAlignment="textStart"
+            android:layout_gravity="start"
             android:textSize="24sp"
             android:paddingTop="25sp"
             android:paddingBottom="25sp"
@@ -43,7 +44,6 @@
             android:layout_gravity="center_horizontal"
             android:background="@color/defaultRed"
             android:layout_margin="5sp"
-            android:capitalize="characters"
             android:textColor="@color/white" />
 
         <LinearLayout
