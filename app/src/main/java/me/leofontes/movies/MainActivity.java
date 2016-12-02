@@ -59,8 +59,13 @@ public class MainActivity extends AppCompatActivity
 
         if(detailContainerView != null) {
             TWO_PANES = true;
-            //detailContainerView.setVisibility(View.INVISIBLE);
-            fragmentManager.beginTransaction().replace(R.id.detail_container, fragmentManager.findFragmentById(R.id.detail_container)).commit();
+
+            if(fragmentManager.findFragmentById(R.id.detail_container) != null) {
+                fragmentManager.beginTransaction().replace(R.id.detail_container, fragmentManager.findFragmentById(R.id.detail_container)).commit();
+            } else {
+                detailContainerView.setVisibility(View.INVISIBLE);
+                fragmentManager.beginTransaction().replace(R.id.detail_container, new MovieDetailActivityFragment()).commit();
+            }
         } else {
             TWO_PANES = false;
         }
