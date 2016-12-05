@@ -33,24 +33,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static me.leofontes.movies.Utility.isOnline;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link HighRated.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link HighRated#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class HighRated extends Fragment implements RecyclerViewOnClickListenerHack {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String POSITION = "POSITION";
     private static final String TAG = "HIGHRATED_TAG";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -58,37 +43,17 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
     private MoviesCatalog catalog;
     private View rootview;
 
+    private int mPosition = RecyclerView.NO_POSITION;
+
     private MovieDBService service;
 
     public HighRated() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HighRated.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HighRated newInstance(String param1, String param2) {
-        HighRated fragment = new HighRated();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -98,6 +63,10 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
         rootview = inflater.inflate(R.layout.fragment_high_rated, container, false);
         // Manage the RecyclerView
         mRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_high_rated);
+
+        if(savedInstanceState != null && savedInstanceState.containsKey(POSITION)) {
+            mPosition = savedInstanceState.getInt(POSITION);
+        }
 
         return rootview;
     }
@@ -144,10 +113,13 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
                         }
                     });
 
-
                     MovieAdapter adapter = new MovieAdapter(catalog.results);
                     adapter.setmRecyclerViewOnClickListenerHack(HighRated.this);
                     mRecyclerView.setAdapter(adapter);
+
+                    if(mPosition != RecyclerView.NO_POSITION) {
+                        mRecyclerView.scrollToPosition(mPosition);
+                    }
                 }
             }
 
@@ -184,6 +156,8 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
 
     @Override
     public void OnClickListener(View view, int position) {
+        mPosition = position;
+
         ((Utility.ClickCallback) getActivity())
                 .onItemSelected(catalog.results.get(position));
     }
@@ -203,4 +177,12 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
         void onFragmentInteraction(Uri uri);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if(mPosition != RecyclerView.NO_POSITION) {
+            outState.putInt(POSITION, mPosition);
+        }
+
+        super.onSaveInstanceState(outState);
+    }
 }

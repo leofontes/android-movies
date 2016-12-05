@@ -29,6 +29,7 @@ import me.leofontes.movies.Utility;
 
 public class Favorite extends Fragment implements RecyclerViewOnClickListenerHack {
     private static final String TAG = "FAV_TAG";
+    private static final String POSITION = "POSITION";
 
     private MovieDBAdapter dbAdapter;
     private List<Movie> mList;
@@ -38,6 +39,7 @@ public class Favorite extends Fragment implements RecyclerViewOnClickListenerHac
     private RecyclerView mRecyclerView;
     private Cursor mCursor;
 
+    private int mPosition = RecyclerView.NO_POSITION;
     private OnFragmentInteractionListener mListener;
 
     public Favorite() {
@@ -74,7 +76,20 @@ public class Favorite extends Fragment implements RecyclerViewOnClickListenerHac
 
         dbAdapter.close();
 
+        if(savedInstanceState != null && savedInstanceState.containsKey(POSITION)) {
+            mPosition = savedInstanceState.getInt(POSITION);
+        }
+
         return rootview;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(mPosition != RecyclerView.NO_POSITION) {
+            mRecyclerView.scrollToPosition(mPosition);
+        }
     }
 
     public void updateList() {
@@ -126,6 +141,8 @@ public class Favorite extends Fragment implements RecyclerViewOnClickListenerHac
 
     @Override
     public void OnClickListener(View view, int position) {
+        mPosition = position;
+
         ((Utility.ClickCallback) getActivity())
                 .onItemSelected(mArrayList.get(position));
     }
@@ -143,5 +160,14 @@ public class Favorite extends Fragment implements RecyclerViewOnClickListenerHac
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if(mPosition != RecyclerView.NO_POSITION) {
+            outState.putInt(POSITION, mPosition);
+        }
+
+        super.onSaveInstanceState(outState);
     }
 }
