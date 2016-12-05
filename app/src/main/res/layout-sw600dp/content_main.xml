@@ -9,7 +9,7 @@
     tools:context="me.leofontes.movies.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <fragment
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -17,7 +17,7 @@
         android:name="me.leofontes.movies.Fragments.Home"
         tools:layout="@layout/fragment_home">
 
-    </fragment>
+    </FrameLayout>
 
     <FrameLayout
         android:layout_width="0dp"

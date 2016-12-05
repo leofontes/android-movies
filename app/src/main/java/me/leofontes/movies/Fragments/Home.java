@@ -40,6 +40,7 @@ public class Home extends Fragment implements RecyclerViewOnClickListenerHack {
     private OnFragmentInteractionListener mListener;
 
     private RecyclerView mRecyclerView;
+    MovieAdapter adapter;
     private MoviesCatalog catalog;
     private View rootview;
 
@@ -101,19 +102,7 @@ public class Home extends Fragment implements RecyclerViewOnClickListenerHack {
                         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
                     }
 
-                    mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-                        @Override
-                        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                            super.onScrollStateChanged(recyclerView, newState);
-                        }
-
-                        @Override
-                        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                            super.onScrolled(recyclerView, dx, dy);
-                        }
-                    });
-
-                    MovieAdapter adapter = new MovieAdapter(catalog.results);
+                    adapter = new MovieAdapter(catalog.results);
                     adapter.setmRecyclerViewOnClickListenerHack(Home.this);
                     mRecyclerView.setAdapter(adapter);
 
@@ -128,6 +117,10 @@ public class Home extends Fragment implements RecyclerViewOnClickListenerHack {
                 Log.e(TAG, "Erro: " + t.getMessage());
             }
         });
+    }
+
+    public void changeData() {
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

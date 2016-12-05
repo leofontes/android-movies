@@ -70,8 +70,10 @@ public class MainActivity extends AppCompatActivity
             TWO_PANES = false;
         }
 
-        fragment = fragmentManager.findFragmentById(R.id.content_main);
-        fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
+        if(savedInstanceState == null) {
+            fragment = new Home();
+            fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
+        }
 
         Log.i("MAINACTIVITY", "inside mainactivity");
     }

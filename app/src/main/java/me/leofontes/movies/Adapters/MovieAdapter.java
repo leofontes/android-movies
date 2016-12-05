@@ -53,6 +53,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
         mRecyclerViewOnClickListenerHack = r;
     }
 
+    public void clearData() {
+        int size = mList.size();
+
+        for(int i = 0; i < size; i++) {
+            mList.remove(0);
+        }
+
+        this.notifyItemRangeRemoved(0, size);
+    }
+
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public ImageView ivPoster;
         public TextView ivTitle;

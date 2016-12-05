@@ -58,6 +58,8 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
     private MoviesCatalog catalog;
     private View rootview;
 
+    private MovieDBService service;
+
     public HighRated() {
         // Required empty public constructor
     }
@@ -94,71 +96,66 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootview = inflater.inflate(R.layout.fragment_high_rated, container, false);
+        // Manage the RecyclerView
+        mRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_high_rated);
+
+        return rootview;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         if(isOnline(getActivity())) {
-            // Retrofit stuff
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(MovieDBService.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
-            MovieDBService service = retrofit.create(MovieDBService.class);
-            Call<MoviesCatalog> requestCatalogHighRated = service.listCatalogHighRated();
+            service = retrofit.create(MovieDBService.class);
+            fetchHighRated();
+        }
+    }
 
-            requestCatalogHighRated.enqueue(new Callback<MoviesCatalog>() {
-                @Override
-                public void onResponse(Call<MoviesCatalog> call, Response<MoviesCatalog> response) {
-                    if(!response.isSuccessful()) {
-                        Log.i(TAG, "Erro: " + response.code());
-                    } else {
-                        catalog = response.body();
+    private void fetchHighRated() {
+        Call<MoviesCatalog> requestCatalogHighRated = service.listCatalogHighRated();
 
-//                        for(Movie m : catalog.results) {
-//                            Log.i(TAG, "Original Title: " + m.original_title);
-//                            Log.i(TAG, "Overview: " + m.overview);
-//                            Log.i(TAG, "Backdrop: " + m.backdrop_path);
-//                            Log.i(TAG, "Vote Average: " + m.vote_average);
-//                            Log.i(TAG, "Release date: " + m.release_date);
-//
-//                            Log.i(TAG, "-----------------------------------------");
-//                        }
+        requestCatalogHighRated.enqueue(new Callback<MoviesCatalog>() {
+            @Override
+            public void onResponse(Call<MoviesCatalog> call, Response<MoviesCatalog> response) {
+                if(!response.isSuccessful()) {
+                    Log.i(TAG, "Erro: " + response.code());
+                } else {
+                    catalog = response.body();
 
-                        // Manage the RecyclerView
-                        mRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_high_rated);
+                    if(MainActivity.TWO_PANES) {
+                        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
+                    }
 
-                        if(MainActivity.TWO_PANES) {
-                            mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
+                    mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+                        @Override
+                        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                            super.onScrollStateChanged(recyclerView, newState);
                         }
 
-                        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-                            @Override
-                            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                                super.onScrollStateChanged(recyclerView, newState);
-                            }
-
-                            @Override
-                            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                                super.onScrolled(recyclerView, dx, dy);
-                            }
-                        });
+                        @Override
+                        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                            super.onScrolled(recyclerView, dx, dy);
+                        }
+                    });
 
 
-                        MovieAdapter adapter = new MovieAdapter(catalog.results);
-                        adapter.setmRecyclerViewOnClickListenerHack(HighRated.this);
-                        mRecyclerView.setAdapter(adapter);
-                    }
+                    MovieAdapter adapter = new MovieAdapter(catalog.results);
+                    adapter.setmRecyclerViewOnClickListenerHack(HighRated.this);
+                    mRecyclerView.setAdapter(adapter);
                 }
+            }
 
-                @Override
-                public void onFailure(Call<MoviesCatalog> call, Throwable t) {
-                    Log.e(TAG, "Erro: " + t.getMessage());
-                }
-            });
-        }
-
-
-
-        return rootview;
+            @Override
+            public void onFailure(Call<MoviesCatalog> call, Throwable t) {
+                Log.e(TAG, "Erro: " + t.getMessage());
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event
