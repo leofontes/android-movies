@@ -1,12 +1,9 @@
 package me.leofontes.movies.Fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,9 +15,7 @@ import me.leofontes.movies.Adapters.MovieAdapter;
 import me.leofontes.movies.Interfaces.MovieDBService;
 import me.leofontes.movies.Interfaces.RecyclerViewOnClickListenerHack;
 import me.leofontes.movies.MainActivity;
-import me.leofontes.movies.Models.Movie;
 import me.leofontes.movies.Models.MoviesCatalog;
-import me.leofontes.movies.MovieDetailActivity;
 import me.leofontes.movies.R;
 import me.leofontes.movies.Utility;
 import retrofit2.Call;
@@ -31,39 +26,38 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static me.leofontes.movies.Utility.isOnline;
 
-
-public class Home extends Fragment implements RecyclerViewOnClickListenerHack {
-
-    private static final String TAG = "HOME_TAG";
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link Upcoming.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ */
+public class Upcoming extends Fragment implements RecyclerViewOnClickListenerHack {
+    private static final String TAG = "UPCOMING_TAG";
     private static final String POSITION = "POSITION";
 
     private OnFragmentInteractionListener mListener;
-
-    private RecyclerView mRecyclerView;
+    private MovieDBService service;
     private MovieAdapter adapter;
     private MoviesCatalog catalog;
-    private View rootview;
-
-    private MovieDBService service;
 
     private int mPosition = RecyclerView.NO_POSITION;
 
-    public Home() {
+    //Widgets
+    RecyclerView mRecyclerView;
+
+    public Upcoming() {
         // Required empty public constructor
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootview = inflater.inflate(R.layout.fragment_home, container, false);
+        View rootview = inflater.inflate(R.layout.fragment_upcoming, container, false);
 
-        mRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_home);
+        mRecyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerview_upcoming);
 
         if(savedInstanceState != null && savedInstanceState.containsKey(POSITION)) {
             mPosition = savedInstanceState.getInt(POSITION);
@@ -83,14 +77,14 @@ public class Home extends Fragment implements RecyclerViewOnClickListenerHack {
                     .build();
 
             service = retrofit.create(MovieDBService.class);
-            fetchPopularMovies();
+            fetchUpcomingMovies();
         }
     }
 
-    private void fetchPopularMovies() {
-        Call<MoviesCatalog> requestCatalogPopular = service.listCatalogPopular();
+    private void fetchUpcomingMovies() {
+        Call<MoviesCatalog> requestCatalogUpcoming = service.listCatalogUpcoming();
 
-        requestCatalogPopular.enqueue(new Callback<MoviesCatalog>() {
+        requestCatalogUpcoming.enqueue(new Callback<MoviesCatalog>() {
             @Override
             public void onResponse(Call<MoviesCatalog> call, Response<MoviesCatalog> response) {
                 if(!response.isSuccessful()) {
@@ -101,12 +95,12 @@ public class Home extends Fragment implements RecyclerViewOnClickListenerHack {
                     if(MainActivity.TWO_PANES) {
                         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
                         if(catalog.results.get(0) != null) {
-                            ((Utility.setupFirstMovie) getActivity()).setup(catalog.results.get(0), Utility.HOME);
+                            ((Utility.setupFirstMovie) getActivity()).setup(catalog.results.get(0), Utility.UPCOMING);
                         }
                     }
 
                     adapter = new MovieAdapter(catalog.results);
-                    adapter.setmRecyclerViewOnClickListenerHack(Home.this);
+                    adapter.setmRecyclerViewOnClickListenerHack(Upcoming.this);
                     mRecyclerView.setAdapter(adapter);
 
                     if(mPosition != RecyclerView.NO_POSITION) {
@@ -122,7 +116,6 @@ public class Home extends Fragment implements RecyclerViewOnClickListenerHack {
         });
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -152,7 +145,6 @@ public class Home extends Fragment implements RecyclerViewOnClickListenerHack {
 
         ((Utility.ClickCallback) getActivity())
                 .onItemSelected(catalog.results.get(position));
-
     }
 
     /**
@@ -166,6 +158,7 @@ public class Home extends Fragment implements RecyclerViewOnClickListenerHack {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
@@ -174,8 +167,7 @@ public class Home extends Fragment implements RecyclerViewOnClickListenerHack {
         if(mPosition != RecyclerView.NO_POSITION) {
             outState.putInt(POSITION, mPosition);
         }
-        
+
         super.onSaveInstanceState(outState);
     }
-
 }

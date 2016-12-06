@@ -14,6 +14,7 @@ public class Utility {
     public static final String HOME = "HOME";
     public static final String HIGHRATED = "HIGHRATED";
     public static final String FAVORITE = "FAVORITE";
+    public static final String UPCOMING = "UPCOMING";
 
     public static boolean isOnline(Context c) {
         ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);

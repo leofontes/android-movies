@@ -20,11 +20,12 @@ import me.leofontes.movies.Fragments.Favorite;
 import me.leofontes.movies.Fragments.HighRated;
 import me.leofontes.movies.Fragments.Home;
 import me.leofontes.movies.Fragments.MovieDetailActivityFragment;
+import me.leofontes.movies.Fragments.Upcoming;
 import me.leofontes.movies.Models.Movie;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        HighRated.OnFragmentInteractionListener, Home.OnFragmentInteractionListener, Favorite.OnFragmentInteractionListener,
+        HighRated.OnFragmentInteractionListener, Home.OnFragmentInteractionListener, Favorite.OnFragmentInteractionListener, Upcoming.OnFragmentInteractionListener,
         Utility.ClickCallback, Utility.setupFirstMovie {
 
     public static final String DETAIL_FRAG_TAG = "DETAIL_FRAG_TAG";
@@ -115,6 +116,10 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_favorite) {
             fragment = new Favorite();
             ORIGIN = Utility.FAVORITE;
+            fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
+        } else if (id == R.id.nav_upcoming) {
+            fragment = new Upcoming();
+            ORIGIN = Utility.UPCOMING;
             fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
         }
 

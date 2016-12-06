@@ -25,4 +25,7 @@ public interface MovieDBService {
 
     @GET("movie/{id}/reviews?api_key=ac6ebfcd9300aeee710aef10fe23e547")
     Call<ReviewCatalog> listReviews(@Path("id") String movieId);
+
+    @GET("movie/upcoming?api_key=ac6ebfcd9300aeee710aef10fe23e547")
+    Call<MoviesCatalog> listCatalogUpcoming();
 }
