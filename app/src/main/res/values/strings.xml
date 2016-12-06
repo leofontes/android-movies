@@ -44,4 +44,6 @@
     <string name="error_removed_favorite">Could not remove from favorites, please try again later</string>
     <string name="toast_removed_favorite">Removed from your favorites</string>
     <string name="title_activity_about">About us</string>
+
+
 </resources>
