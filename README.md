@@ -8,6 +8,7 @@
   <li>Most popular movies</li>
   <li>Highest rated movies</li>
   <li>Favorite movies, stored on a local Database</li>
+  <li>Upcoming movies</li>
 </ul>
 
 <h3>Features</h3>
