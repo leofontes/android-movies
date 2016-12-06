@@ -3,10 +3,16 @@
 <h3>About</h3>
 <p>This project was developed for Udacity's Nanodegree program.</p>
 
-<h3>Features</h3>
+<h3>Sections</h3>
 <ul>
   <li>Most popular movies</li>
   <li>Highest rated movies</li>
+  <li>Favorite movies, stored on a local Database</li>
+</ul>
+
+<h3>Features</h3>
+<ul>
+  <li>View general information, reviews and trailers of all movies (WHEN AVAILABLE)</li>
 </ul>
 
 <h3>API Key</h3>
