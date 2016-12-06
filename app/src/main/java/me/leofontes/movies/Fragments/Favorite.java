@@ -84,7 +84,7 @@ public class Favorite extends Fragment implements RecyclerViewOnClickListenerHac
         updateList();
 
         if(mArrayList.get(0) != null) {
-            ((Utility.setupFirstMovie) getActivity()).setup(mArrayList.get(0), false);
+            ((Utility.setupFirstMovie) getActivity()).setup(mArrayList.get(0), Utility.FAVORITE);
         }
 
         mRecyclerView.setAdapter(mMovieAdapter);

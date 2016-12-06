@@ -3,6 +3,7 @@ package me.leofontes.movies;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Contacts;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity
     private View detailContainerView;
 
     public static boolean TWO_PANES;
-    public static boolean FROM_FAVORITE;
+    public static String ORIGIN;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,19 +104,18 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_popular) {
             fragment = new Home();
-            FROM_FAVORITE = false;
+            ORIGIN = Utility.HOME;
             fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
         } else if (id == R.id.nav_rating) {
             fragment = new HighRated();
-            FROM_FAVORITE = false;
+            ORIGIN = Utility.HIGHRATED;
             fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
         } else if (id == R.id.nav_about) {
             Intent intent = new Intent(this, AboutActivity.class);
-            FROM_FAVORITE = false;
             startActivity(intent);
         } else if (id == R.id.nav_favorite) {
             fragment = new Favorite();
-            FROM_FAVORITE = true;
+            ORIGIN = Utility.FAVORITE;
             fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
         }
 
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity
     public void onItemSelected(Movie m) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("movie", m);
-        bundle.putBoolean("favorite", FROM_FAVORITE);
+        bundle.putString("origin", ORIGIN);
 
         if(TWO_PANES) {
             detailContainerView.setVisibility(View.VISIBLE);
@@ -150,8 +150,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void setup(Movie m, boolean fromFavorite) {
+    public void setup(Movie m, String listOrigin) {
         MovieDetailActivityFragment movieDetailActivityFragment = (MovieDetailActivityFragment) fragmentManager.findFragmentByTag(DETAIL_FRAG_TAG);
-        movieDetailActivityFragment.setupExternal(m, fromFavorite);
+        movieDetailActivityFragment.setupExternal(m, listOrigin);
     }
 }

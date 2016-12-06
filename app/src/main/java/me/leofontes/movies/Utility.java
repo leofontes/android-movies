@@ -11,6 +11,10 @@ import me.leofontes.movies.Models.Movie;
  */
 
 public class Utility {
+    public static final String HOME = "HOME";
+    public static final String HIGHRATED = "HIGHRATED";
+    public static final String FAVORITE = "FAVORITE";
+
     public static boolean isOnline(Context c) {
         ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
@@ -26,6 +30,6 @@ public class Utility {
     }
 
     public interface setupFirstMovie {
-        public void setup(Movie m, boolean fromFavorite);
+        public void setup(Movie m, String listOrigin);
     }
 }

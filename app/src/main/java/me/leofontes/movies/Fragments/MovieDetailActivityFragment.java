@@ -30,6 +30,7 @@ import me.leofontes.movies.Models.ReviewCatalog;
 import me.leofontes.movies.Models.Video;
 import me.leofontes.movies.Models.VideoCatalog;
 import me.leofontes.movies.R;
+import me.leofontes.movies.Utility;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,12 +46,12 @@ public class MovieDetailActivityFragment extends Fragment {
     private static final String TAG = "DETAIL_TAG";
 
     private Movie movie;
+    private String origin = Utility.HOME;
 
     private String mBaseImage = "http://image.tmdb.org/t/p/w780/";
 
     private Cursor mCursor;
     private MovieDBAdapter dbAdapter;
-    private boolean fromFavoriteList;
     private boolean isFavorite;
     private Button mFavoriteButton;
 
@@ -91,7 +92,7 @@ public class MovieDetailActivityFragment extends Fragment {
 
         if(savedInstanceState != null && savedInstanceState.containsKey("movie")) {
             movie = savedInstanceState.getParcelable("movie");
-            fromFavoriteList = savedInstanceState.getBoolean("favorite");
+            origin = savedInstanceState.getString("origin");
         }
 
         return rootview;
@@ -113,7 +114,7 @@ public class MovieDetailActivityFragment extends Fragment {
 
         if(movie == null && bundle != null) {
             movie = bundle.getParcelable("movie");
-            fromFavoriteList = bundle.getBoolean("favorite");
+            origin = bundle.getString("origin");
         }
 
         // Check whether the current movie is a Favorite, and change the button accordingly
@@ -138,7 +139,7 @@ public class MovieDetailActivityFragment extends Fragment {
 
     private void configureFragment() {
         //Populate the Reviews and Trailers
-        if(!fromFavoriteList && isOnline(getActivity()) && movie != null) {//Fetch info with the API
+        if(!origin.equals(Utility.FAVORITE) && isOnline(getActivity()) && movie != null) { //Fetch info with the API
 
             //Instantiate Retrofit
             Retrofit retrofit = new Retrofit.Builder()
@@ -153,7 +154,7 @@ public class MovieDetailActivityFragment extends Fragment {
             //Fetch the reviews
             requestReviewsRetrofit(movie.id);
 
-        } else if(fromFavoriteList && movie != null){ //Fetch info from the favorite list
+        } else if(origin.equals(Utility.FAVORITE) && movie != null){ //Fetch info from the favorite list
 
             //Instantiate Database Helper
             dbAdapter = new MovieDBAdapter(getContext());
@@ -350,16 +351,16 @@ public class MovieDetailActivityFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         if(movie != null) {
             outState.putParcelable("movie", movie);
-            outState.putBoolean("favorite", fromFavoriteList);
+            outState.putString("origin", origin);
         }
 
         super.onSaveInstanceState(outState);
     }
 
-    public void setupExternal(Movie m, boolean fromFavorite) {
-        if(movie == null) {
+    public void setupExternal(Movie m, String listOrigin) {
+        if(movie == null || !listOrigin.equals(origin)) {
             movie = m;
-            fromFavoriteList = fromFavorite;
+            origin = listOrigin;
 
             if(movie != null) {
                 populateFields(movie);
