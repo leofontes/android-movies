@@ -1,7 +1,5 @@
 package me.leofontes.movies;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,7 +25,9 @@ import me.leofontes.movies.Models.Movie;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         HighRated.OnFragmentInteractionListener, Home.OnFragmentInteractionListener, Favorite.OnFragmentInteractionListener,
-        Utility.ClickCallback {
+        Utility.ClickCallback, Utility.setupFirstMovie {
+
+    public static final String DETAIL_FRAG_TAG = "DETAIL_FRAG_TAG";
 
     private FragmentManager fragmentManager;
     private Fragment fragment;
@@ -61,10 +61,9 @@ public class MainActivity extends AppCompatActivity
             TWO_PANES = true;
 
             if(fragmentManager.findFragmentById(R.id.detail_container) != null) {
-                fragmentManager.beginTransaction().replace(R.id.detail_container, fragmentManager.findFragmentById(R.id.detail_container)).commit();
+                fragmentManager.beginTransaction().replace(R.id.detail_container, fragmentManager.findFragmentById(R.id.detail_container), DETAIL_FRAG_TAG).commit();
             } else {
-                detailContainerView.setVisibility(View.INVISIBLE);
-                fragmentManager.beginTransaction().replace(R.id.detail_container, new MovieDetailActivityFragment()).commit();
+                fragmentManager.beginTransaction().replace(R.id.detail_container, new MovieDetailActivityFragment(), DETAIL_FRAG_TAG).commit();
             }
         } else {
             TWO_PANES = false;
@@ -142,11 +141,17 @@ public class MainActivity extends AppCompatActivity
 
             fragment.setArguments(bundle);
 
-            fragmentManager.beginTransaction().replace(R.id.detail_container, fragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.detail_container, fragment, DETAIL_FRAG_TAG).commit();
         } else {
             Intent intent = new Intent(this, MovieDetailActivity.class);
             intent.putExtra("bundle", bundle);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void setup(Movie m, boolean fromFavorite) {
+        MovieDetailActivityFragment movieDetailActivityFragment = (MovieDetailActivityFragment) fragmentManager.findFragmentByTag(DETAIL_FRAG_TAG);
+        movieDetailActivityFragment.setupExternal(m, fromFavorite);
     }
 }

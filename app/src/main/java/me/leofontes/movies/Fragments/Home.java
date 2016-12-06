@@ -100,6 +100,9 @@ public class Home extends Fragment implements RecyclerViewOnClickListenerHack {
 
                     if(MainActivity.TWO_PANES) {
                         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
+                        if(catalog.results.get(0) != null) {
+                            ((Utility.setupFirstMovie) getActivity()).setup(catalog.results.get(0), false);
+                        }
                     }
 
                     adapter = new MovieAdapter(catalog.results);
@@ -174,4 +177,5 @@ public class Home extends Fragment implements RecyclerViewOnClickListenerHack {
         
         super.onSaveInstanceState(outState);
     }
+
 }

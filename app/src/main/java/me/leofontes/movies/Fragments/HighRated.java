@@ -99,19 +99,10 @@ public class HighRated extends Fragment implements RecyclerViewOnClickListenerHa
 
                     if(MainActivity.TWO_PANES) {
                         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
+                        if(catalog.results.get(0) != null) {
+                            ((Utility.setupFirstMovie) getActivity()).setup(catalog.results.get(0), false);
+                        }
                     }
-
-                    mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-                        @Override
-                        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                            super.onScrollStateChanged(recyclerView, newState);
-                        }
-
-                        @Override
-                        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                            super.onScrolled(recyclerView, dx, dy);
-                        }
-                    });
 
                     MovieAdapter adapter = new MovieAdapter(catalog.results);
                     adapter.setmRecyclerViewOnClickListenerHack(HighRated.this);

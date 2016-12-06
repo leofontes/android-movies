@@ -24,4 +24,8 @@ public class Utility {
     public interface ClickCallback {
         public void onItemSelected(Movie m);
     }
+
+    public interface setupFirstMovie {
+        public void setup(Movie m, boolean fromFavorite);
+    }
 }

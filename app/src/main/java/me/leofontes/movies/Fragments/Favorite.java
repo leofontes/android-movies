@@ -63,19 +63,6 @@ public class Favorite extends Fragment implements RecyclerViewOnClickListenerHac
             mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
         }
 
-        mArrayList = new ArrayList<>();
-
-        dbAdapter = new MovieDBAdapter(getContext());
-        dbAdapter.open();
-
-        mMovieAdapter = new MovieAdapter(mArrayList);
-        mMovieAdapter.setmRecyclerViewOnClickListenerHack(Favorite.this);
-        updateList();
-
-        mRecyclerView.setAdapter(mMovieAdapter);
-
-        dbAdapter.close();
-
         if(savedInstanceState != null && savedInstanceState.containsKey(POSITION)) {
             mPosition = savedInstanceState.getInt(POSITION);
         }
@@ -86,6 +73,22 @@ public class Favorite extends Fragment implements RecyclerViewOnClickListenerHac
     @Override
     public void onResume() {
         super.onResume();
+
+        mArrayList = new ArrayList<>();
+
+        dbAdapter = new MovieDBAdapter(getContext());
+        dbAdapter.open();
+
+        mMovieAdapter = new MovieAdapter(mArrayList);
+        mMovieAdapter.setmRecyclerViewOnClickListenerHack(Favorite.this);
+        updateList();
+
+        if(mArrayList.get(0) != null) {
+            ((Utility.setupFirstMovie) getActivity()).setup(mArrayList.get(0), false);
+        }
+
+        mRecyclerView.setAdapter(mMovieAdapter);
+        dbAdapter.close();
 
         if(mPosition != RecyclerView.NO_POSITION) {
             mRecyclerView.scrollToPosition(mPosition);
@@ -115,7 +118,6 @@ public class Favorite extends Fragment implements RecyclerViewOnClickListenerHac
         mMovieAdapter.notifyDataSetChanged();
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -158,7 +160,6 @@ public class Favorite extends Fragment implements RecyclerViewOnClickListenerHac
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 

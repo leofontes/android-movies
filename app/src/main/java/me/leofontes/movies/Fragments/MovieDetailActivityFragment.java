@@ -125,6 +125,18 @@ public class MovieDetailActivityFragment extends Fragment {
             populateFields(movie);
         }
 
+        configureFragment();
+    }
+
+    private void populateFields(Movie m) {
+        mTextViewTitle.setText(m.original_title);
+        mTextViewSynopsis.setText(m.overview);
+        mTextViewUserRating.setText(String.valueOf(m.vote_average));
+        mTextViewReleaseDate.setText(m.release_date);
+        Picasso.with(getActivity()).load(mBaseImage + m.backdrop_path).into(mImageViewPoster);
+    }
+
+    private void configureFragment() {
         //Populate the Reviews and Trailers
         if(!fromFavoriteList && isOnline(getActivity()) && movie != null) {//Fetch info with the API
 
@@ -174,14 +186,6 @@ public class MovieDetailActivityFragment extends Fragment {
         });
     }
 
-    private void populateFields(Movie m) {
-        mTextViewTitle.setText(m.original_title);
-        mTextViewSynopsis.setText(m.overview);
-        mTextViewUserRating.setText(String.valueOf(m.vote_average));
-        mTextViewReleaseDate.setText(m.release_date);
-        Picasso.with(getActivity()).load(mBaseImage + m.backdrop_path).into(mImageViewPoster);
-    }
-
     private boolean checkFavorite() {
         dbAdapter = new MovieDBAdapter(getContext());
         dbAdapter.open();
@@ -192,7 +196,6 @@ public class MovieDetailActivityFragment extends Fragment {
         if(mCursor.moveToFirst() && movie != null) {
             do {
                 favId = mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.MovieContract._ID));
-
                 //Found the movie in the favorites list
                 if(favId.equals(movie.id)) {
                     return true;
@@ -348,10 +351,19 @@ public class MovieDetailActivityFragment extends Fragment {
         if(movie != null) {
             outState.putParcelable("movie", movie);
             outState.putBoolean("favorite", fromFavoriteList);
-
-            Log.i(TAG, "inside on Save instance");
-            Log.i(TAG, "onSaveinstance state movie: " + movie.original_title);
         }
+
         super.onSaveInstanceState(outState);
+    }
+
+    public void setupExternal(Movie m, boolean fromFavorite) {
+        movie = m;
+        fromFavoriteList = fromFavorite;
+
+        if(movie != null) {
+            populateFields(movie);
+        }
+
+        configureFragment();
     }
 }
