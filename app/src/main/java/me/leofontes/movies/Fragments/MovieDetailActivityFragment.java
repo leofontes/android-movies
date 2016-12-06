@@ -357,13 +357,15 @@ public class MovieDetailActivityFragment extends Fragment {
     }
 
     public void setupExternal(Movie m, boolean fromFavorite) {
-        movie = m;
-        fromFavoriteList = fromFavorite;
+        if(movie == null) {
+            movie = m;
+            fromFavoriteList = fromFavorite;
 
-        if(movie != null) {
-            populateFields(movie);
+            if(movie != null) {
+                populateFields(movie);
+            }
+
+            configureFragment();
         }
-
-        configureFragment();
     }
 }
