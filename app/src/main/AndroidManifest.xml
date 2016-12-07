@@ -40,6 +40,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="me.leofontes.movies.MainActivity" />
         </activity>
+        <provider
+            android:authorities="me.leofontes.movies.provider"
+            android:name=".Databases.MovieProvider"
+            android:exported="false"
+            />
     </application>
 
 </manifest>

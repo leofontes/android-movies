@@ -31,7 +31,6 @@ public class Favorite extends Fragment implements RecyclerViewOnClickListenerHac
     private static final String TAG = "FAV_TAG";
     private static final String POSITION = "POSITION";
 
-    private MovieDBAdapter dbAdapter;
     private List<Movie> mList;
     private ArrayList<Movie> mArrayList;
     private MovieAdapter mMovieAdapter;
@@ -76,9 +75,6 @@ public class Favorite extends Fragment implements RecyclerViewOnClickListenerHac
 
         mArrayList = new ArrayList<>();
 
-        dbAdapter = new MovieDBAdapter(getContext());
-        dbAdapter.open();
-
         mMovieAdapter = new MovieAdapter(mArrayList);
         mMovieAdapter.setmRecyclerViewOnClickListenerHack(Favorite.this);
         updateList();
@@ -88,7 +84,6 @@ public class Favorite extends Fragment implements RecyclerViewOnClickListenerHac
         }
 
         mRecyclerView.setAdapter(mMovieAdapter);
-        dbAdapter.close();
 
         if(mPosition != RecyclerView.NO_POSITION) {
             mRecyclerView.scrollToPosition(mPosition);
@@ -96,7 +91,7 @@ public class Favorite extends Fragment implements RecyclerViewOnClickListenerHac
     }
 
     public void updateList() {
-        mCursor = dbAdapter.getAllMovies();
+        mCursor = getContext().getContentResolver().query(ContractDB.MovieContract.CONTENT_URI, null, null, null, null);
         mArrayList.clear();
 
         Movie m;

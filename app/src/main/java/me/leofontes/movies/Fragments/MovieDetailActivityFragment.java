@@ -1,5 +1,6 @@
 package me.leofontes.movies.Fragments;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
@@ -158,7 +159,6 @@ public class MovieDetailActivityFragment extends Fragment {
 
             //Instantiate Database Helper
             dbAdapter = new MovieDBAdapter(getContext());
-            dbAdapter.open();
 
             //Fetch the videos (trailers)
             requestVideosDatabase(movie.id);
@@ -178,20 +178,16 @@ public class MovieDetailActivityFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dbAdapter = new MovieDBAdapter(getContext());
-                dbAdapter.open();
 
                 controlFavorite(isFavorite);
-
-                dbAdapter.close();
             }
         });
     }
 
     private boolean checkFavorite() {
         dbAdapter = new MovieDBAdapter(getContext());
-        dbAdapter.open();
 
-        mCursor = dbAdapter.getAllMovies();
+        mCursor = getContext().getContentResolver().query(ContractDB.MovieContract.CONTENT_URI, null, null, null, null);
         String favId;
 
         if(mCursor.moveToFirst() && movie != null) {
@@ -203,8 +199,6 @@ public class MovieDetailActivityFragment extends Fragment {
                 }
             } while (mCursor.moveToNext());
         }
-
-        dbAdapter.close();
 
         return false;
     }
@@ -223,29 +217,37 @@ public class MovieDetailActivityFragment extends Fragment {
 
     private void controlFavorite(boolean favoriteStatus) {
         if(favoriteStatus) {
-            // Remove from the list of favorites
-            boolean wasRemoved = dbAdapter.removeFavorite(movie.id);
-            if(wasRemoved) {
-                Toast.makeText(getContext(), getResources().getString(R.string.toast_removed_favorite), Toast.LENGTH_SHORT).show();
-                //Update the button
-                isFavorite = !isFavorite;
-                changeButton();
-            } else {
-                Toast.makeText(getContext(), getResources().getString(R.string.error_removed_favorite), Toast.LENGTH_SHORT).show();
-            }
+            // Remove from the list of favorites in reverse order because of foreign keys
+            String[] args = new String[] {
+                String.valueOf(movie.id)
+            };
+
+            //Delete Videos
+            String selection = ContractDB.VideoContract.COLUMN_MOVIE + "=?";
+            getContext().getContentResolver().delete(ContractDB.VideoContract.buildVideoUri(Long.parseLong(movie.id)), selection, args);
+
+            //Delete Reviews
+            selection = ContractDB.ReviewContract.COLUMN_MOVIE + "=?";
+            getContext().getContentResolver().delete(ContractDB.ReviewContract.buildReviewUri(Long.parseLong(movie.id)), selection, args);
+
+            //Delete Movies
+            selection = ContractDB.MovieContract._ID + "=?";
+            getContext().getContentResolver().delete(ContractDB.MovieContract.CONTENT_URI, selection, args);
+
+            Toast.makeText(getContext(), getResources().getString(R.string.toast_removed_favorite), Toast.LENGTH_SHORT).show();
+            //Update the button
+            isFavorite = !isFavorite;
+            changeButton();
+
 
         } else {
             // Add to the favorite list
             // Insert the movie
-            dbAdapter.insertMovie(movie);
+            getContext().getContentResolver().insert(ContractDB.MovieContract.CONTENT_URI, genCValuesMovie());
             // Insert all the reviews
-            for(int i = 0; i < reviewCatalog.results.size(); i++) {
-                dbAdapter.insertReview(reviewCatalog.results.get(i), Integer.parseInt(movie.id));
-            }
+            getContext().getContentResolver().bulkInsert(ContractDB.ReviewContract.buildReviewUri(Long.parseLong(movie.id)), genCValuesArrReview());
             // Insert all the videos
-            for(int i = 0; i < videoCatalog.results.size(); i++) {
-                dbAdapter.insertVideo(videoCatalog.results.get(i), Integer.parseInt(movie.id));
-            }
+            getContext().getContentResolver().bulkInsert(ContractDB.VideoContract.buildVideoUri(Long.parseLong(movie.id)), genCValuesArrVideo());
 
             Toast.makeText(getContext(), getResources().getString(R.string.toast_added_favorite), Toast.LENGTH_SHORT).show();
 
@@ -308,7 +310,8 @@ public class MovieDetailActivityFragment extends Fragment {
     }
 
     private void requestReviewsDatabase(String movieId) {
-        mCursor = dbAdapter.getReviews(movieId);
+        long id = Long.parseLong(movieId);
+        mCursor = getContext().getContentResolver().query(ContractDB.ReviewContract.buildReviewUri(id), null, null, null, null);
         Review r;
         mArraylistReviews = new ArrayList<>();
 
@@ -328,7 +331,8 @@ public class MovieDetailActivityFragment extends Fragment {
     }
 
     private void requestVideosDatabase(String movieId) {
-        mCursor = dbAdapter.getVideos(movieId);
+        long id = Long.parseLong(movieId);
+        mCursor = getContext().getContentResolver().query(ContractDB.VideoContract.buildVideoUri(id), null, null, null, null);
         Video v;
         mArraylistVideos = new ArrayList<>();
 
@@ -368,5 +372,55 @@ public class MovieDetailActivityFragment extends Fragment {
 
             configureFragment();
         }
+    }
+
+    public ContentValues genCValuesMovie() {
+        ContentValues cvalues = new ContentValues();
+        // Assign the data
+        cvalues.put(ContractDB.MovieContract._ID, movie.id);
+        cvalues.put(ContractDB.MovieContract.COLUMN_NAME, movie.original_title);
+        cvalues.put(ContractDB.MovieContract.COLUMN_IMAGE, movie.backdrop_path);
+        cvalues.put(ContractDB.MovieContract.COLUMN_RATING, movie.vote_average);
+        cvalues.put(ContractDB.MovieContract.COLUMN_RELEASE_DATE, movie.release_date);
+        cvalues.put(ContractDB.MovieContract.COLUMN_SYNOPSIS, movie.overview);
+
+        return cvalues;
+    }
+
+    public ContentValues[] genCValuesArrReview() {
+        ContentValues[] cvaluesArr = new ContentValues[reviewCatalog.results.size()];
+        int current = 0;
+
+        for(Review review : reviewCatalog.results) {
+            ContentValues cvalues = new ContentValues();
+            //Assign the data
+            cvalues.put(ContractDB.ReviewContract.COLUMN_AUTHOR, review.author);
+            cvalues.put(ContractDB.ReviewContract.COLUMN_CONTENT, review.content);
+            cvalues.put(ContractDB.ReviewContract.COLUMN_MOVIE, movie.id);
+            //Store on array and increase current
+            cvaluesArr[current] = cvalues;
+            current++;
+        }
+
+        return cvaluesArr;
+    }
+
+    public ContentValues[] genCValuesArrVideo() {
+        ContentValues[] cvaluesArr = new ContentValues[videoCatalog.results.size()];
+        int current = 0;
+
+        for (Video video : videoCatalog.results) {
+            // New row of values to insert
+            ContentValues cvalues = new ContentValues();
+            //Assign the data
+            cvalues.put(ContractDB.VideoContract.COLUMN_KEY, video.key);
+            cvalues.put(ContractDB.VideoContract.COLUMN_NAME, video.name);
+            cvalues.put(ContractDB.VideoContract.COLUMN_MOVIE, movie.id);
+            //Store on array and increase current
+            cvaluesArr[current] = cvalues;
+            current++;
+        }
+
+        return cvaluesArr;
     }
 }

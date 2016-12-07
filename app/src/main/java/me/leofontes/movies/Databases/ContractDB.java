@@ -1,5 +1,8 @@
 package me.leofontes.movies.Databases;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
@@ -7,7 +10,41 @@ import android.provider.BaseColumns;
  */
 
 public class ContractDB {
+    // The "Content authority" is a name for the entire content provider, similar to the
+    // relationship between a domain name and its website.  A convenient string to use for the
+    // content authority is the package name for the app, which is guaranteed to be unique on the
+    // device.
+    public static final String CONTENT_AUTHORITY = "me.leofontes.movies.provider";
+
+    // Use CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
+    // the content provider.
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+
+    // Possible paths (appended to base content URI for possible URI's)
+    // For instance, content://com.example.android.sunshine.app/weather/ is a valid path for
+    // looking at weather data. content://com.example.android.sunshine.app/givemeroot/ will fail,
+    // as the ContentProvider hasn't been given any information on what to do with "givemeroot".
+    // At least, let's hope not.  Don't be that dev, reader.  Don't be that dev.
+    public static final String PATH_MOVIE = "movie";
+    public static final String PATH_VIDEO = "video";
+    public static final String PATH_REVIEW = "review";
+
     public static final class MovieContract implements BaseColumns {
+        //Provider related
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_MOVIE).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIE;
+
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIE;
+
+        public static Uri buildWeatherUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        //Table name
         public static final String TABLE_NAME = "movies";
 
         //Columns
@@ -28,9 +65,29 @@ public class ContractDB {
                 COLUMN_RATING + " REAL NOT NULL, " +
                 COLUMN_RELEASE_DATE + " TEXT NOT NULL " +
                 " );";
+
     }
 
     public static final class ReviewContract implements BaseColumns {
+        //Provider related
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_REVIEW).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_REVIEW;
+
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_REVIEW;
+
+        public static Uri buildReviewUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static int getIdFromUri(Uri uri) {
+            return Integer.parseInt(uri.getPathSegments().get(1));
+        }
+
+        //Table name
         public static final String TABLE_NAME = "reviews";
 
         //Columns
@@ -52,6 +109,21 @@ public class ContractDB {
     }
 
     public static final class VideoContract implements BaseColumns {
+        //Provider related
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_VIDEO).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_VIDEO;
+
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_VIDEO;
+
+        public static Uri buildVideoUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        //Table name
         public static final String TABLE_NAME = "videos";
 
         //Columns
@@ -69,5 +141,9 @@ public class ContractDB {
                 COLUMN_MOVIE + " TEXT NOT NULL, " +
                 " FOREIGN KEY (" + COLUMN_MOVIE + ") REFERENCES " + MovieContract.TABLE_NAME + "(" + MovieContract._ID + ")" +
                 " );";
+
+        public static int getIdFromUri(Uri uri) {
+            return Integer.parseInt(uri.getPathSegments().get(1));
+        }
     }
 }
