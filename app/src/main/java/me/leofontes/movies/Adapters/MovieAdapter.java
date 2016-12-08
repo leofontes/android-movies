@@ -53,6 +53,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
         mRecyclerViewOnClickListenerHack = r;
     }
 
+    public void setList(List<Movie> l) {
+        this.mList = l;
+        this.notifyDataSetChanged();
+    }
+
     public void clearData() {
         int size = mList.size();
 

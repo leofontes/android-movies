@@ -30,6 +30,21 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.MyViewHold
         mList = l;
     }
 
+    public void clearData() {
+        int size = mList.size();
+
+        for(int i = 0; i < size; i++) {
+            mList.remove(0);
+        }
+
+        this.notifyItemRangeRemoved(0, size);
+    }
+
+    public void setList(List<Review> l) {
+        this.mList = l;
+        this.notifyDataSetChanged();
+    }
+
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         mBaseNumber = parent.getResources().getString(R.string.review_base_number);

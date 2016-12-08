@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,8 +46,13 @@ import static me.leofontes.movies.Utility.isOnline;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MovieDetailActivityFragment extends Fragment {
+public class MovieDetailActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "DETAIL_TAG";
+    private static final int REVIEW_LOADER = 1;
+    private static final int VIDEO_LOADER = 2;
+
+    private VideoAdapter mVideoAdapter;
+    private ReviewAdapter mReviewAdapter;
 
     private Movie movie;
     private String origin = Utility.HOME;
@@ -157,16 +165,15 @@ public class MovieDetailActivityFragment extends Fragment {
 
         } else if(origin.equals(Utility.FAVORITE) && movie != null){ //Fetch info from the favorite list
 
-            //Instantiate Database Helper
-            dbAdapter = new MovieDBAdapter(getContext());
+//            //Instantiate Database Helper
+//            dbAdapter = new MovieDBAdapter(getContext());
 
             //Fetch the videos (trailers)
-            requestVideosDatabase(movie.id);
+            requestVideosDatabase();
 
             //Fetch the reviews
-            requestReviewsDatabase(movie.id);
+            requestReviewsDatabase();
 
-            dbAdapter.close();
         } else if(!isOnline(getActivity())) { //User is offline
 
             //Let the user know about Internet failure
@@ -309,46 +316,39 @@ public class MovieDetailActivityFragment extends Fragment {
         });
     }
 
-    private void requestReviewsDatabase(String movieId) {
-        long id = Long.parseLong(movieId);
-        mCursor = getContext().getContentResolver().query(ContractDB.ReviewContract.buildReviewUri(id), null, null, null, null);
-        Review r;
+    private void requestReviewsDatabase() {
+//        long id = Long.parseLong(movieId);
+//        mCursor = getContext().getContentResolver().query(ContractDB.ReviewContract.buildReviewUri(id), null, null, null, null);
+
         mArraylistReviews = new ArrayList<>();
-
-        if(mCursor.moveToFirst()) {
-            do {
-                r = new Review(
-                        mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.ReviewContract.COLUMN_AUTHOR)),
-                        mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.ReviewContract.COLUMN_CONTENT))
-                );
-
-                mArraylistReviews.add(r);
-            } while(mCursor.moveToNext());
-        }
-
-        ReviewAdapter reviewAdapter = new ReviewAdapter(mArraylistReviews);
-        reviewRecyclerView.setAdapter(reviewAdapter);
+        mReviewAdapter = new ReviewAdapter(mArraylistReviews);
+        reviewRecyclerView.setAdapter(mReviewAdapter);
+        getLoaderManager().initLoader(REVIEW_LOADER, null, this);
     }
 
-    private void requestVideosDatabase(String movieId) {
-        long id = Long.parseLong(movieId);
-        mCursor = getContext().getContentResolver().query(ContractDB.VideoContract.buildVideoUri(id), null, null, null, null);
-        Video v;
+    private void requestVideosDatabase() {
+//        long id = Long.parseLong(movieId);
+//        mCursor = getContext().getContentResolver().query(ContractDB.VideoContract.buildVideoUri(id), null, null, null, null);
+//
+//        mArraylistVideos = new ArrayList<>();
+//
+//        if(mCursor.moveToFirst()) {
+//            do {
+//                Video v = new Video(
+//                        mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.VideoContract.COLUMN_KEY)),
+//                        mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.VideoContract.COLUMN_NAME))
+//                );
+//
+//                mArraylistVideos.add(v);
+//            } while (mCursor.moveToNext());
+//        }
+//
+//        VideoAdapter videoAdapter = new VideoAdapter(mArraylistVideos);
+//        videoRecyclerView.setAdapter(videoAdapter);
         mArraylistVideos = new ArrayList<>();
-
-        if(mCursor.moveToFirst()) {
-            do {
-                v = new Video(
-                        mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.VideoContract.COLUMN_KEY)),
-                        mCursor.getString(mCursor.getColumnIndexOrThrow(ContractDB.VideoContract.COLUMN_NAME))
-                );
-
-                mArraylistVideos.add(v);
-            } while (mCursor.moveToNext());
-        }
-
-        VideoAdapter videoAdapter = new VideoAdapter(mArraylistVideos);
-        videoRecyclerView.setAdapter(videoAdapter);
+        mVideoAdapter = new VideoAdapter(mArraylistVideos);
+        videoRecyclerView.setAdapter(mVideoAdapter);
+        getLoaderManager().initLoader(VIDEO_LOADER, null, this);
     }
 
     @Override
@@ -422,5 +422,74 @@ public class MovieDetailActivityFragment extends Fragment {
         }
 
         return cvaluesArr;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case REVIEW_LOADER:
+                return new CursorLoader(
+                        getContext(),
+                        ContractDB.ReviewContract.buildReviewUri(Long.parseLong(movie.id)),
+                        ContractDB.ReviewContract.COLUMNS,
+                        null,
+                        null,
+                        null
+                );
+            case VIDEO_LOADER:
+                return new CursorLoader(
+                        getContext(),
+                        ContractDB.VideoContract.buildVideoUri(Long.parseLong(movie.id)),
+                        ContractDB.ReviewContract.COLUMNS,
+                        null,
+                        null,
+                        null
+                );
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if(loader.getId() == REVIEW_LOADER) {
+            mArraylistVideos.clear();
+
+            if(data.moveToFirst()) {
+                do {
+                    Review r = new Review(
+                            data.getString(data.getColumnIndexOrThrow(ContractDB.ReviewContract.COLUMN_AUTHOR)),
+                            data.getString(data.getColumnIndexOrThrow(ContractDB.ReviewContract.COLUMN_CONTENT))
+                    );
+
+                    mArraylistReviews.add(r);
+                } while(mCursor.moveToNext());
+            }
+
+            mReviewAdapter.setList(mArraylistReviews);
+
+
+        } else if(loader.getId() == VIDEO_LOADER) {
+            mArraylistVideos.clear();
+
+            if(data.moveToFirst()) {
+                do {
+                    Video v = new Video(
+                            data.getString(data.getColumnIndexOrThrow(ContractDB.VideoContract.COLUMN_KEY)),
+                            data.getString(data.getColumnIndexOrThrow(ContractDB.VideoContract.COLUMN_NAME))
+                    );
+
+                    mArraylistVideos.add(v);
+                } while (data.moveToNext());
+            }
+
+            mVideoAdapter.setList(mArraylistVideos);
+
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }
