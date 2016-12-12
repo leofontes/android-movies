@@ -388,40 +388,48 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
     }
 
     public ContentValues[] genCValuesArrReview() {
-        ContentValues[] cvaluesArr = new ContentValues[reviewCatalog.results.size()];
-        int current = 0;
+        if(reviewCatalog.results != null) {
+            ContentValues[] cvaluesArr = new ContentValues[reviewCatalog.results.size()];
+            int current = 0;
 
-        for(Review review : reviewCatalog.results) {
-            ContentValues cvalues = new ContentValues();
-            //Assign the data
-            cvalues.put(ContractDB.ReviewContract.COLUMN_AUTHOR, review.author);
-            cvalues.put(ContractDB.ReviewContract.COLUMN_CONTENT, review.content);
-            cvalues.put(ContractDB.ReviewContract.COLUMN_MOVIE, movie.id);
-            //Store on array and increase current
-            cvaluesArr[current] = cvalues;
-            current++;
+            for(Review review : reviewCatalog.results) {
+                ContentValues cvalues = new ContentValues();
+                //Assign the data
+                cvalues.put(ContractDB.ReviewContract.COLUMN_AUTHOR, review.author);
+                cvalues.put(ContractDB.ReviewContract.COLUMN_CONTENT, review.content);
+                cvalues.put(ContractDB.ReviewContract.COLUMN_MOVIE, movie.id);
+                //Store on array and increase current
+                cvaluesArr[current] = cvalues;
+                current++;
+            }
+
+            return cvaluesArr;
+        } else {
+            return null;
         }
-
-        return cvaluesArr;
     }
 
     public ContentValues[] genCValuesArrVideo() {
-        ContentValues[] cvaluesArr = new ContentValues[videoCatalog.results.size()];
-        int current = 0;
+        if(videoCatalog.results != null) {
+            ContentValues[] cvaluesArr = new ContentValues[videoCatalog.results.size()];
+            int current = 0;
 
-        for (Video video : videoCatalog.results) {
-            // New row of values to insert
-            ContentValues cvalues = new ContentValues();
-            //Assign the data
-            cvalues.put(ContractDB.VideoContract.COLUMN_KEY, video.key);
-            cvalues.put(ContractDB.VideoContract.COLUMN_NAME, video.name);
-            cvalues.put(ContractDB.VideoContract.COLUMN_MOVIE, movie.id);
-            //Store on array and increase current
-            cvaluesArr[current] = cvalues;
-            current++;
+            for (Video video : videoCatalog.results) {
+                // New row of values to insert
+                ContentValues cvalues = new ContentValues();
+                //Assign the data
+                cvalues.put(ContractDB.VideoContract.COLUMN_KEY, video.key);
+                cvalues.put(ContractDB.VideoContract.COLUMN_NAME, video.name);
+                cvalues.put(ContractDB.VideoContract.COLUMN_MOVIE, movie.id);
+                //Store on array and increase current
+                cvaluesArr[current] = cvalues;
+                current++;
+            }
+
+            return cvaluesArr;
+        } else {
+            return null;
         }
-
-        return cvaluesArr;
     }
 
     @Override
@@ -440,7 +448,7 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
                 return new CursorLoader(
                         getContext(),
                         ContractDB.VideoContract.buildVideoUri(Long.parseLong(movie.id)),
-                        ContractDB.ReviewContract.COLUMNS,
+                        ContractDB.VideoContract.COLUMNS,
                         null,
                         null,
                         null
@@ -453,7 +461,7 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if(loader.getId() == REVIEW_LOADER) {
-            mArraylistVideos.clear();
+            mArraylistReviews.clear();
 
             if(data.moveToFirst()) {
                 do {
@@ -490,6 +498,17 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        int id = loader.getId();
 
+        switch (id) {
+            case REVIEW_LOADER:
+                mReviewAdapter.clearData();
+                break;
+            case VIDEO_LOADER:
+                mVideoAdapter.clearData();
+                break;
+            default:
+
+        }
     }
 }
